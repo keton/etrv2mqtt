@@ -11,10 +11,8 @@ def create_device(address:str, key:bytes) -> Device:
     return Device(address, None, key, retry_limit=5)
 
 def read_device(device: Device) -> dict:
-    n = device.get_name()
-    b = device.get_battery()
-    [room_temp, set_point] = device.get_temperature().split("|")
-    return {'name': n, 'battery': int(b), 'room_temp': float(room_temp), 'set_point': float(set_point)}
+    d=device._device
+    return {'name': d.name, 'battery': d.battery, 'room_temp': d.temperature.room_temperature, 'set_point': d.temperature.set_point_temperature}
 
 def set_temperature(device: Device, temperature: float):
     device.set_setpoint(float(temperature))
