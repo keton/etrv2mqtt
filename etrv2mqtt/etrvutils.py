@@ -3,8 +3,8 @@ from libetrv.bluetooth import btle
 
 class eTRVUtils:
     @staticmethod
-    def create_device(address:str, key:bytes) -> eTRVDevice:
-        return eTRVDevice(address, secret=key, retry_limit=5)
+    def create_device(address:str, key:bytes, retry_limit:int=5) -> eTRVDevice:
+        return eTRVDevice(address, secret=key, retry_limit=retry_limit)
     
     @staticmethod
     def read_device(device: eTRVDevice) -> dict:

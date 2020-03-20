@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "~/venv/libetrv/bin/python3",
+    "python.venvFolders": ["venv"],
     "json.schemas": [
         {
             "fileMatch": [
@@ -7,5 +7,6 @@
             ],
             "url": "/etrv2mqtt/schemas/config.schema.json"
         }
-    ]
+    ],
+    "python.pythonPath": "/home/hass/venv/libetrv/bin/python"
 }
