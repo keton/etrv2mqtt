@@ -1,0 +1,77 @@
+{ 
+    "$schema": "http://json-schema.org/schema#",
+    "$id": "https://raw.githubusercontent.com/keton/etrv2mqtt/master/etrv2mqtt/schemas/config.schema.json",
+    "type":"object",
+    "required": ["thermostats", "mqtt", "poll_interval", "retry_limit"],
+    "properties": {
+        "thermostats": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/thermostat"},
+            "description": "List of controlled thermostats"
+        },
+        "mqtt": {
+            "type":"object",
+            "description": "MQTT Server settings",
+            "required": ["server", "port", "base_topic"],
+            "properties": {
+                "server": {
+                    "type":"string",
+                    "description": "MQTT server name"
+                },
+                "port": {
+                    "type":"integer",
+                    "description": "MQTT server port",
+                    "minimum": 1,
+                    "maximum": 65534
+                },
+                "user": {
+                    "type":"string",
+                    "description": "user name required to connect"
+                },
+                "password": {
+                    "type":"string",
+                    "description": "password required to connect"
+                },
+                "base_topic": {
+                    "type":"string",
+                    "description": "base MQTT topic for all thermostats"
+                }
+            }
+        },
+        "poll_interval": {
+            "type":"integer",
+            "description": "Interval between thermostat data readouts in seconds",
+            "minimum": 1
+        },
+        "retry_limit": {
+            "type":"integer",
+            "description": "Limit of BLE connect attempts",
+            "minimum": 0
+        }
+    },
+    "definitions": {
+        "thermostat": {
+            "type":"object",
+            "required": ["topic", "address", "secret_key"],
+            "properties": {
+                "topic": {
+                    "type": "string",
+                    "description": "MQTT topic name to control this thermostat",
+                    "minLength":1
+                },
+                "address": {
+                    "type":"string",
+                    "description": "BLE MAC address of the thermostat in 00:00:00:00:00:00 format",
+                    "minLength":17,
+                    "maxLength": 17
+                },
+                "secret_key": {
+                    "type":"string",
+                    "description": "Secret pairing key of the thermostat as hex string, 16 bytes, 32 hex chars",
+                    "minLength":32,
+                    "maxLength": 32
+                }
+            }
+        }
+    }
+}
