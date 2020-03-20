@@ -1,0 +1,11 @@
+{
+    "python.pythonPath": "~/venv/libetrv/bin/python3",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "**/*.config.json"
+            ],
+            "url": "/etrv2mqtt/schemas/config.schema.json"
+        }
+    ]
+}
