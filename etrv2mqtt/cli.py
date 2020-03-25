@@ -62,8 +62,11 @@ def main(config_file: str):
     mqtt = Mqtt(config, devices, set_temperature_callback)
 
     while True:
-        poll_devices(devices)
-        time.sleep(config.poll_interval)
+        if mqtt.is_connected():
+            poll_devices(devices)
+            time.sleep(config.poll_interval)
+        else:
+            time.sleep(10)
 
 def usage():
     print('Usage: '+sys.argv[0]+' configfile.json')

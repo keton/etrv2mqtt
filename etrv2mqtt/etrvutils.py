@@ -1,7 +1,7 @@
 from libetrv.device import eTRVDevice
 from libetrv.bluetooth import btle
 from dataclasses import dataclass,asdict
-
+import json
 
 @dataclass(repr=False)
 class eTRVData:
@@ -11,7 +11,7 @@ class eTRVData:
     set_point: float
 
     def __repr__(self):
-        return str(asdict(self))
+        return json.dumps(self.__dict__)
 
 
 class eTRVUtils:

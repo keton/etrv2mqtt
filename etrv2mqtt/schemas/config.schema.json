@@ -12,17 +12,19 @@
         "mqtt": {
             "type":"object",
             "description": "MQTT Server settings",
-            "required": ["server", "port", "base_topic"],
+            "required": ["server", "port", "base_topic", "autodiscovery"],
             "properties": {
                 "server": {
                     "type":"string",
-                    "description": "MQTT server name"
+                    "description": "MQTT server name",
+                    "default": "localhost"
                 },
                 "port": {
                     "type":"integer",
                     "description": "MQTT server port",
                     "minimum": 1,
-                    "maximum": 65534
+                    "maximum": 65534,
+                    "default": 1883
                 },
                 "user": {
                     "type":"string",
@@ -34,19 +36,37 @@
                 },
                 "base_topic": {
                     "type":"string",
-                    "description": "base MQTT topic for all thermostats"
+                    "description": "base MQTT topic for all thermostats",
+                    "default": "etrv"
+                },
+                "autodiscovery": {
+                    "type": "boolean",
+                    "description": "Enable MQTT autodiscovery for Homeassistant and OpenHab",
+                    "default": true
+                },
+                "autodiscovery_topic": {
+                    "type": "string",
+                    "description": "Base autodiscovery topic name",
+                    "default": "homeassistant"
+                },
+                "autodiscovery_retain": {
+                    "type":"boolean",
+                    "default": true,
+                    "description": "Set retain bit on autodiscovery related messages"
                 }
             }
         },
         "poll_interval": {
             "type":"integer",
             "description": "Interval between thermostat data readouts in seconds",
-            "minimum": 1
+            "minimum": 1,
+            "default": 3600
         },
         "retry_limit": {
             "type":"integer",
             "description": "Limit of BLE connect attempts",
-            "minimum": 0
+            "minimum": 0,
+            "default": 5
         }
     },
     "definitions": {

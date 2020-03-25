@@ -16,9 +16,11 @@ class _MQTTConfig:
     server: str
     port: int
     base_topic: str
-    user: str = None
-    password: str = None
-
+    user: str
+    password: str
+    autodiscovery: bool
+    autodiscovery_topic: str
+    autodiscovery_retain: bool
 
 class Config:
     def __init__(self, filename: str):
@@ -34,7 +36,10 @@ class Config:
             _config_json['mqtt']['port'],
             _config_json['mqtt']['base_topic'],
             _config_json['mqtt']['user'] if 'user' in _config_json['mqtt'].keys() else None,
-            _config_json['mqtt']['password'] if 'password' in _config_json['mqtt'].keys() else None
+            _config_json['mqtt']['password'] if 'password' in _config_json['mqtt'].keys() else None,
+            _config_json['mqtt']['autodiscovery'],
+            _config_json['mqtt']['autodiscovery_topic'] if 'autodiscovery_topic' in _config_json['mqtt'].keys() else 'homeassistant',
+            _config_json['mqtt']['autodiscovery_retain'] if 'autodiscovery_retain' in _config_json['mqtt'].keys() else True
         )
         self.retry_limit = _config_json['retry_limit']
         self.poll_interval = _config_json['poll_interval']
