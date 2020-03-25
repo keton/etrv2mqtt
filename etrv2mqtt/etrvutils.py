@@ -1,7 +1,9 @@
-from libetrv.device import eTRVDevice
-from libetrv.bluetooth import btle
-from dataclasses import dataclass,asdict
 import json
+from dataclasses import dataclass
+
+from libetrv.bluetooth import btle
+from libetrv.device import eTRVDevice
+
 
 @dataclass(repr=False)
 class eTRVData:
