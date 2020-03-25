@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from importlib import resources as importlib_resources
 
 from jsonschema import validate
+from typing import Dict, Optional
 
 
 @dataclass
@@ -17,8 +18,8 @@ class _MQTTConfig:
     server: str
     port: int
     base_topic: str
-    user: str
-    password: str
+    user: Optional[str]
+    password: Optional[str]
     autodiscovery: bool
     autodiscovery_topic: str
     autodiscovery_retain: bool
@@ -42,9 +43,9 @@ class Config:
             _config_json['mqtt']['autodiscovery_topic'] if 'autodiscovery_topic' in _config_json['mqtt'].keys() else 'homeassistant',
             _config_json['mqtt']['autodiscovery_retain'] if 'autodiscovery_retain' in _config_json['mqtt'].keys() else True
         )
-        self.retry_limit = _config_json['retry_limit']
-        self.poll_interval = _config_json['poll_interval']
-        self.thermostats = {}
+        self.retry_limit:int = _config_json['retry_limit']
+        self.poll_interval:int = _config_json['poll_interval']
+        self.thermostats:Dict[str, ThermostatConfig] = {}
         for t in _config_json['thermostats']:
             self.thermostats[t['topic']] = ThermostatConfig(
                 t['topic'],

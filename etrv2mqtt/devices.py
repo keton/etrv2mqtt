@@ -7,6 +7,7 @@ from loguru import logger
 from etrv2mqtt.config import Config, ThermostatConfig
 from etrv2mqtt.etrvutils import eTRVUtils
 from etrv2mqtt.mqtt import Mqtt
+from typing import Type, Dict
 
 
 class DeviceBase(ABC):
@@ -48,9 +49,9 @@ class TRVDevice(DeviceBase):
             logger.error(e)
 
 class DeviceManager():
-    def __init__(self, config:Config, deviceClass:DeviceBase):
+    def __init__(self, config:Config, deviceClass:Type[DeviceBase]):
         self._config=config
-        self._devices={}
+        self._devices:Dict[str, DeviceBase]={}
         for thermostat_config in self._config.thermostats.values():
             logger.debug("Adding {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
             device = deviceClass(thermostat_config, config)
