@@ -1,5 +1,10 @@
 # etrv2mqtt
-MQTT bridge for Danfoss eTRV thermostats
+MQTT bridge for Danfoss eTRV thermostats. Supports MQTT autodiscovery in Home Assistant.
+
+![Home Assistant dashboard example](docs/example.png)
+
+Device links are supported so Home Assistant sees all sensors as a single logical entity
+![device properties example](docs/device_properties.png)
 
 ## Installation
 ```sh
@@ -19,18 +24,19 @@ cd etrv2mqtt
     "mqtt": {
         "base_topic": "etrv",
         "server": "localhost",
-        "port": 1883
+        "port": 1883,
+        "autodiscovery": true
     },
-    "poll_interval": 20,
+    "poll_interval": 600,
     "retry_limit": 5,
     "thermostats": [
         {
-            "topic": "room",
+            "topic": "Room",
             "address": "00:01:02:03:04:05",
             "secret_key": "01020304050607080910111213141516"
         },
         {
-            "topic": "kitchen",
+            "topic": "Kitchen",
             "address": "02:03:04:03:04:05",
             "secret_key": "11121304050607080910111213141516"
         }
@@ -38,5 +44,10 @@ cd etrv2mqtt
 }
 ```
 
+## Getting MAC addresses and secret keys
+1. Scan for nearby thermostats: `sudo ~/venv/libetrv/bin/python3 -m libetrv.cli scan` 
+2. Get secret key for a device: `~/venv/libetrv/bin/python3 -m libetrv.cli device --device-id 01:02:03:04:05:06 retrieve_key`. Push physical button on thermostat when prompted.
+
 ## Running
-`~/venv/libetrv/bin/python3 etrv2mqtt.cli config.json`
+`~/venv/libetrv/bin/python3 etrv2mqtt.cli config.json` 
+Configured devices should be automatically added to homeassistant as long as MQTT autodiscovery is enabled.
