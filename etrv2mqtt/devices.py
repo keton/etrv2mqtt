@@ -1,0 +1,80 @@
+import time
+from abc import ABC, abstractmethod
+
+from libetrv.bluetooth import btle
+from loguru import logger
+
+from etrv2mqtt.config import Config, ThermostatConfig
+from etrv2mqtt.etrvutils import eTRVUtils
+from etrv2mqtt.mqtt import Mqtt
+
+
+class DeviceBase(ABC):
+    def __init__(self, thermostat_config:ThermostatConfig, config:Config):
+        super().__init__()
+    
+    @abstractmethod
+    def poll(self, mqtt:Mqtt):
+        pass
+
+    @abstractmethod
+    def set_temperature(self, mqtt:Mqtt, temperature: float):
+        pass
+
+class TRVDevice(DeviceBase):
+    def __init__(self, thermostat_config:ThermostatConfig, config:Config):
+        super().__init__(thermostat_config, config)
+        self._device=eTRVUtils.create_device(thermostat_config.address, 
+                        bytes.fromhex(thermostat_config.secret_key), 
+                        retry_limit=config.retry_limit)
+        self._name=thermostat_config.topic
+
+    def poll(self, mqtt:Mqtt):
+        try:
+            logger.debug("Polling data from {}", self._name)
+            ret = eTRVUtils.read_device(self._device)
+            logger.debug(str(ret))
+            mqtt.publish_device_data(self._name, str(ret))
+        except btle.BTLEDisconnectError as e:
+            logger.error(e)
+        
+    def set_temperature(self, mqtt:Mqtt, temperature: float):
+        try:
+            logger.debug("Setting {} to {}C", self._name, temperature)
+            eTRVUtils.set_temperature(self._device, temperature)
+            # Home assistant needs to see updated temperature value to confirm change
+            self.poll(mqtt)
+        except btle.BTLEDisconnectError as e:
+            logger.error(e)
+
+class DeviceManager():
+    def __init__(self, config:Config, deviceClass:DeviceBase):
+        self._config=config
+        self._devices={}
+        for thermostat_config in self._config.thermostats.values():
+            logger.debug("Adding {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
+            device = deviceClass(thermostat_config, config)
+            self._devices[thermostat_config.topic] = device
+        
+        self._mqtt=Mqtt(self._config)
+        self._mqtt.set_temperature_callback=self._set_temperature_callback
+
+    def _poll_devices(self):
+        for device in self._devices.values():
+            device.poll(self._mqtt)
+
+    def poll_forever(self):
+        while True:
+            if self._mqtt.is_connected():
+                self._poll_devices()
+                time.sleep(self._config.poll_interval)
+            else:
+                time.sleep(2)
+
+    def _set_temperature_callback(self, mqtt:Mqtt, name: str, temperature: float):
+        if name not in self._devices.keys():
+            logger.warning(
+                "Device {} not found", name)
+            return
+        device = self._devices[name]
+        device.set_temperature(self._mqtt, temperature)

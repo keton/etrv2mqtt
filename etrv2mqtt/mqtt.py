@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from loguru import logger
+from typing import Callable, Dict
+
 import paho.mqtt.client as paho_mqtt
 from libetrv.device import eTRVDevice
+from loguru import logger
 
-from etrv2mqtt.config import Config
 from etrv2mqtt.autodiscovery import Autodiscovery, AutodiscoveryResult
-from typing import Dict, Callable
-
-import json
-import copy
+from etrv2mqtt.config import Config
 
 
 class Mqtt(object):
@@ -19,13 +17,8 @@ class Mqtt(object):
     def is_connected(self) -> bool:
         return self._is_connected
 
-    def __init__(self, config: Config, devices: Dict[str, eTRVDevice],
-                 set_temperature_callback: Callable[[Mqtt, Dict[str, eTRVDevice], str, float], None] = None,
-                 on_connect_callback: Callable[[Mqtt, Dict[str, eTRVDevice]], None] = None):
+    def __init__(self, config: Config):
         self._config = config
-        self._devices = devices
-        self._set_temperature_callback = set_temperature_callback
-        self._on_connect_callback = on_connect_callback
 
         self._client = paho_mqtt.Client()
         self._client.on_connect = self._on_connect
@@ -64,9 +57,6 @@ class Mqtt(object):
         self._client.subscribe(
             self._config.mqtt.base_topic+'/+/set')
 
-        if self._on_connect_callback is not None:
-            self._on_connect_callback(self._devices)
-
         self._is_connected = True
 
     def _on_disconnect(self, client, userdata, rc):
@@ -76,18 +66,17 @@ class Mqtt(object):
     def _on_message(self, client, userdata, msg):
         logger.debug("on_message: "+msg.topic+" "+str(msg.payload))
         name = msg.topic.split('/')[-2]
-        if name in self._devices.keys():
-            try:
-                if self._set_temperature_callback is not None:
-                    self._set_temperature_callback(
-                        self, self._devices, name, float(msg.payload))
-            except ValueError:
-                logger.debug("{} is not a valid float", msg.payload)
+        try:
+            if self._set_temperature_callback is not None:
+                self._set_temperature_callback(
+                    self, name, float(msg.payload))
+        except ValueError:
+            logger.debug("{} is not a valid float", msg.payload)
 
     @property
-    def set_temperature_callback(self) -> Callable[[Mqtt, Dict[str, eTRVDevice], str, float], None]:
+    def set_temperature_callback(self) -> Callable[[Mqtt, str, float], None]:
         return self._set_temperature_callback
 
     @set_temperature_callback.setter
-    def set_temperature_callback(self, callback: Callable[[Mqtt, Dict[str, eTRVDevice], str, float], None]):
+    def set_temperature_callback(self, callback: Callable[[Mqtt, str, float], None]):
         self._set_temperature_callback = callback

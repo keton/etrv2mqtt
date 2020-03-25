@@ -1,11 +1,12 @@
-from importlib import resources as importlib_resources
 import json
-from jsonschema import validate
 from dataclasses import dataclass
+from importlib import resources as importlib_resources
+
+from jsonschema import validate
 
 
 @dataclass
-class _ThermostatConfig:
+class ThermostatConfig:
     topic: str
     address: str
     secret_key: str
@@ -45,7 +46,7 @@ class Config:
         self.poll_interval = _config_json['poll_interval']
         self.thermostats = {}
         for t in _config_json['thermostats']:
-            self.thermostats[t['topic']] = _ThermostatConfig(
+            self.thermostats[t['topic']] = ThermostatConfig(
                 t['topic'],
                 t['address'],
                 t['secret_key']
