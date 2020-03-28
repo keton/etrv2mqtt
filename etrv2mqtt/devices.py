@@ -7,7 +7,7 @@ from loguru import logger
 from etrv2mqtt.config import Config, ThermostatConfig
 from etrv2mqtt.etrvutils import eTRVUtils
 from etrv2mqtt.mqtt import Mqtt
-from typing import Type, Dict
+from typing import Type, Dict, NoReturn
 
 
 class DeviceBase(ABC):
@@ -67,7 +67,7 @@ class DeviceManager():
         for device in self._devices.values():
             device.poll(self._mqtt)
 
-    def poll_forever(self):
+    def poll_forever(self) -> NoReturn:
         while True:
             if self._mqtt.is_connected():
                 self._poll_devices()
