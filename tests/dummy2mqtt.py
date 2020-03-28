@@ -17,13 +17,12 @@ def main(config_file: str):
     deviceManager=DeviceManager(config, DummyDevice)
     deviceManager.poll_forever()
 
-def usage():
-    print('Usage: '+sys.argv[0]+' configfile.json')
-    sys.exit(0)
-
-
-if __name__ == "__main__":
+def entrypoint():
     if len(sys.argv) < 2:
-        usage()
+        print('Usage: '+sys.argv[0]+' configfile.json')
+        sys.exit(0)
     else:
         main(sys.argv[1])
+
+if __name__ == "__main__":
+    entrypoint()
