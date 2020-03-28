@@ -44,7 +44,7 @@ class TRVDevice(DeviceBase):
         
     def set_temperature(self, mqtt:Mqtt, temperature: float):
         try:
-            logger.debug("Setting {} to {}C", self._name, temperature)
+            logger.info("Setting {} to {}C", self._name, temperature)
             eTRVUtils.set_temperature(self._device, temperature)
             # Home assistant needs to see updated temperature value to confirm change
             self.poll(mqtt)
@@ -56,7 +56,7 @@ class DeviceManager():
         self._config=config
         self._devices:Dict[str, DeviceBase]={}
         for thermostat_config in self._config.thermostats.values():
-            logger.debug("Adding {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
+            logger.info("Adding device {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
             device = deviceClass(thermostat_config, config)
             self._devices[thermostat_config.topic] = device
         

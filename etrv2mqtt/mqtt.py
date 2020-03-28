@@ -64,14 +64,13 @@ class Mqtt(object):
         self._is_connected = False
 
     def _on_message(self, client, userdata, msg):
-        logger.debug("on_message: "+msg.topic+" "+str(msg.payload))
         name = msg.topic.split('/')[-2]
         try:
             if self._set_temperature_callback is not None:
                 self._set_temperature_callback(
                     self, name, float(msg.payload))
         except ValueError:
-            logger.debug("{} is not a valid float", msg.payload)
+            logger.warning("{}: {} is not a valid float", name, msg.payload)
 
     @property
     def set_temperature_callback(self) -> Callable[[Mqtt, str, float], None]:
