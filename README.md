@@ -10,9 +10,7 @@ Device links are supported so Home Assistant sees all sensors as a single logica
 ```sh
 mkdir -p ~/venv/libetrv
 virtualenv ~/venv/libetrv
-git clone https://github.com/keton/etrv2mqtt.git
-cd etrv2mqtt
-~/venv/libetrv/bin/pip3 install -r requirements.txt
+~/venv/libetrv/bin/pip3 install 'git+https://github.com/keton/etrv2mqtt.git'
 ```
 
 ## Configuration
@@ -49,5 +47,5 @@ cd etrv2mqtt
 2. Get secret key for a device: `~/venv/libetrv/bin/python3 -m libetrv.cli device --device-id 01:02:03:04:05:06 retrieve_key`. Push physical button on thermostat when prompted.
 
 ## Running
-`~/venv/libetrv/bin/python3 etrv2mqtt.cli config.json` 
+`~/venv/libetrv/bin/etrv2mqtt config.json` 
 Configured devices should be automatically added to homeassistant as long as MQTT autodiscovery is enabled.
