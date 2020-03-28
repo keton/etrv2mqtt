@@ -16,12 +16,17 @@ def main(config_file: str):
     deviceManager=DeviceManager(config, TRVDevice)
     deviceManager.poll_forever()
 
+@logger.catch
 def entrypoint():
     if len(sys.argv) < 2:
-        print('Usage: '+sys.argv[0]+' configfile.json')
-        sys.exit(0)
-    else:
+        logger.error('Usage: '+sys.argv[0]+' configfile.json')
+        sys.exit(1)
+
+    try:
+        logger.info(sys.argv[0] + ' is starting')
         main(sys.argv[1])
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     entrypoint()

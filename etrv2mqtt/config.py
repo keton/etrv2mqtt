@@ -45,6 +45,7 @@ class Config:
         )
         self.retry_limit:int = _config_json['retry_limit']
         self.poll_interval:int = _config_json['poll_interval']
+        self.stay_connected = _config_json['stay_connected'] if 'stay_connected' in _config_json.keys() else False
         self.thermostats:Dict[str, ThermostatConfig] = {}
         for t in _config_json['thermostats']:
             self.thermostats[t['topic']] = ThermostatConfig(

@@ -7,7 +7,7 @@ from loguru import logger
 from etrv2mqtt.config import Config, ThermostatConfig
 from etrv2mqtt.etrvutils import eTRVUtils
 from etrv2mqtt.mqtt import Mqtt
-from typing import Type, Dict
+from typing import Type, Dict, NoReturn
 
 
 class DeviceBase(ABC):
@@ -29,6 +29,7 @@ class TRVDevice(DeviceBase):
                         bytes.fromhex(thermostat_config.secret_key), 
                         retry_limit=config.retry_limit)
         self._name=thermostat_config.topic
+        self._stay_connected=config.stay_connected
 
     def poll(self, mqtt:Mqtt):
         try:
@@ -36,12 +37,14 @@ class TRVDevice(DeviceBase):
             ret = eTRVUtils.read_device(self._device)
             logger.debug(str(ret))
             mqtt.publish_device_data(self._name, str(ret))
+            if self._stay_connected == False:
+                self._device.disconnect()
         except btle.BTLEDisconnectError as e:
             logger.error(e)
         
     def set_temperature(self, mqtt:Mqtt, temperature: float):
         try:
-            logger.debug("Setting {} to {}C", self._name, temperature)
+            logger.info("Setting {} to {}C", self._name, temperature)
             eTRVUtils.set_temperature(self._device, temperature)
             # Home assistant needs to see updated temperature value to confirm change
             self.poll(mqtt)
@@ -53,7 +56,7 @@ class DeviceManager():
         self._config=config
         self._devices:Dict[str, DeviceBase]={}
         for thermostat_config in self._config.thermostats.values():
-            logger.debug("Adding {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
+            logger.info("Adding device {} MAC: {} key: {}", thermostat_config.topic, thermostat_config.address, thermostat_config.secret_key)
             device = deviceClass(thermostat_config, config)
             self._devices[thermostat_config.topic] = device
         
@@ -64,7 +67,7 @@ class DeviceManager():
         for device in self._devices.values():
             device.poll(self._mqtt)
 
-    def poll_forever(self):
+    def poll_forever(self) -> NoReturn:
         while True:
             if self._mqtt.is_connected():
                 self._poll_devices()
