@@ -29,6 +29,7 @@ class TRVDevice(DeviceBase):
                         bytes.fromhex(thermostat_config.secret_key), 
                         retry_limit=config.retry_limit)
         self._name=thermostat_config.topic
+        self._stay_connected=config.stay_connected
 
     def poll(self, mqtt:Mqtt):
         try:
@@ -36,6 +37,8 @@ class TRVDevice(DeviceBase):
             ret = eTRVUtils.read_device(self._device)
             logger.debug(str(ret))
             mqtt.publish_device_data(self._name, str(ret))
+            if self._stay_connected == False:
+                self._device.disconnect()
         except btle.BTLEDisconnectError as e:
             logger.error(e)
         

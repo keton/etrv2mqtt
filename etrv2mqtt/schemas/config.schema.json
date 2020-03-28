@@ -67,6 +67,11 @@
             "description": "Limit of BLE connect attempts",
             "minimum": 0,
             "default": 5
+        },
+        "stay_connected": {
+            "type": "boolean",
+            "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
+            "default": false
         }
     },
     "definitions": {
