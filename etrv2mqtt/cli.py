@@ -20,10 +20,13 @@ def main(config_file: str):
 def entrypoint():
     if len(sys.argv) < 2:
         logger.error('Usage: '+sys.argv[0]+' configfile.json')
-        sys.exit(0)
-    else:
+        sys.exit(1)
+
+    try:
         logger.info(sys.argv[0] + ' is starting')
         main(sys.argv[1])
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     entrypoint()
