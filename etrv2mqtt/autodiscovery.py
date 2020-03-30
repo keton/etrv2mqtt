@@ -63,6 +63,22 @@ class Autodiscovery():
         }
     }
     """)
+
+    _room_temperature_template = json.loads("""
+    {
+        "device_class": "temperature",
+        "name": "kitchen temperature",
+        "unique_id":"0000_temperature",
+        "state_topic": "etrv/kitchen/state",
+        "value_template": "{{ value_json.room_temp }}",
+        "unit_of_measurement": "°C",
+        "device": {
+            "identifiers":"0000",
+            "manufacturer": "Danfoss",
+            "model": "eTRV"
+        }
+    }
+    """)
     
     def __init__(self, config:Config):
         self._config=config
@@ -114,3 +130,14 @@ class Autodiscovery():
         ))
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
+
+    def register_room_temperature(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'temperature')
+        
+        autodiscovery_msg=self._autodiscovery_payload(self._room_temperature_template, dev_mac, dev_name, "Temperature")
+        autodiscovery_msg['state_topic'] = '/'.join(( 
+            self._config.mqtt.base_topic,
+            dev_name,
+            'state'
+        ))
+        return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))

@@ -72,6 +72,11 @@
             "type": "boolean",
             "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
             "default": false
+        },
+        "report_room_temperature": {
+            "type": "boolean",
+            "description": "Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery",
+            "default": true
         }
     },
     "definitions": {
