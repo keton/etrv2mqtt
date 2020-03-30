@@ -53,6 +53,9 @@ class Mqtt(object):
                     thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
                 self._publish_autodiscovery_result(ad.register_reported_name(
                     thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
+                if self._config.report_room_temperature:
+                    self._publish_autodiscovery_result(ad.register_room_temperature(
+                        thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
 
         self._client.subscribe(
             self._config.mqtt.base_topic+'/+/set')
