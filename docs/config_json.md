@@ -1,0 +1,99 @@
+# `config.json` schema documentation
+
+**_Properties_**
+
+ - <b id="#config.schema.json/properties/thermostats">thermostats</b> `required`
+	 - _List of controlled thermostats_
+	 - Type: `array`
+	 - <i id="#config.schema.json/properties/thermostats">path: #config.schema.json/properties/thermostats</i>
+		 - **_Items_**
+		 - <i id="#config.schema.json/properties/thermostats/items">path: #config.schema.json/properties/thermostats/items</i>
+		 - &#36;ref: [#/definitions/thermostat](#/definitions/thermostat)
+ - <b id="#config.schema.json/properties/mqtt">mqtt</b> `required`
+	 - _MQTT Server settings_
+	 - Type: `object`
+	 - <i id="#config.schema.json/properties/mqtt">path: #config.schema.json/properties/mqtt</i>
+	 - **_Properties_**
+		 - <b id="#config.schema.json/properties/mqtt/properties/server">server</b> `required`
+			 - _MQTT server name_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/server">path: #config.schema.json/properties/mqtt/properties/server</i>
+			 - Default: _"localhost"_
+		 - <b id="#config.schema.json/properties/mqtt/properties/port">port</b> `required`
+			 - _MQTT server port_
+			 - Type: `integer`
+			 - <i id="#config.schema.json/properties/mqtt/properties/port">path: #config.schema.json/properties/mqtt/properties/port</i>
+			 - Default: `1883`
+			 - Range: between 1 and 65534
+		 - <b id="#config.schema.json/properties/mqtt/properties/user">user</b>
+			 - _user name required to connect_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/user">path: #config.schema.json/properties/mqtt/properties/user</i>
+		 - <b id="#config.schema.json/properties/mqtt/properties/password">password</b>
+			 - _password required to connect_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/password">path: #config.schema.json/properties/mqtt/properties/password</i>
+		 - <b id="#config.schema.json/properties/mqtt/properties/base_topic">base_topic</b> `required`
+			 - _base MQTT topic for all thermostats_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/base_topic">path: #config.schema.json/properties/mqtt/properties/base_topic</i>
+			 - Default: _"etrv"_
+		 - <b id="#config.schema.json/properties/mqtt/properties/autodiscovery">autodiscovery</b> `required`
+			 - _Enable MQTT autodiscovery for Homeassistant and OpenHab_
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery">path: #config.schema.json/properties/mqtt/properties/autodiscovery</i>
+			 - Default: _true_
+		 - <b id="#config.schema.json/properties/mqtt/properties/autodiscovery_topic">autodiscovery_topic</b>
+			 - _Base autodiscovery topic name_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery_topic">path: #config.schema.json/properties/mqtt/properties/autodiscovery_topic</i>
+			 - Default: _"homeassistant"_
+		 - <b id="#config.schema.json/properties/mqtt/properties/autodiscovery_retain">autodiscovery_retain</b>
+			 - _Set retain bit on autodiscovery related messages_
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery_retain">path: #config.schema.json/properties/mqtt/properties/autodiscovery_retain</i>
+			 - Default: _true_
+ - <b id="#config.schema.json/properties/poll_interval">poll_interval</b> `required`
+	 - _Interval between thermostat data readouts in seconds_
+	 - Type: `integer`
+	 - <i id="#config.schema.json/properties/poll_interval">path: #config.schema.json/properties/poll_interval</i>
+	 - Default: `3600`
+	 - Range:  &ge; 1
+ - <b id="#config.schema.json/properties/retry_limit">retry_limit</b> `required`
+	 - _Limit of BLE connect attempts_
+	 - Type: `integer`
+	 - <i id="#config.schema.json/properties/retry_limit">path: #config.schema.json/properties/retry_limit</i>
+	 - Default: `5`
+	 - Range:  &ge; 0
+ - <b id="#config.schema.json/properties/stay_connected">stay_connected</b>
+	 - _Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery._
+	 - Type: `boolean`
+	 - <i id="#config.schema.json/properties/stay_connected">path: #config.schema.json/properties/stay_connected</i>
+	 - Default: _false_
+ - <b id="#config.schema.json/properties/report_room_temperature">report_room_temperature</b>
+	 - _Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery_
+	 - Type: `boolean`
+	 - <i id="#config.schema.json/properties/report_room_temperature">path: #config.schema.json/properties/report_room_temperature</i>
+	 - Default: _true_
+# definitions
+
+ - Type: `object`
+ - <i id="#config.schema.json/definitions/thermostat">path: #config.schema.json/definitions/thermostat</i>
+ - **_Properties_**
+	 - <b id="#config.schema.json/definitions/thermostat/properties/topic">topic</b> `required`
+		 - _MQTT topic name to control this thermostat_
+		 - Type: `string`
+		 - <i id="#config.schema.json/definitions/thermostat/properties/topic">path: #config.schema.json/definitions/thermostat/properties/topic</i>
+		 - Length:  &ge; 1
+	 - <b id="#config.schema.json/definitions/thermostat/properties/address">address</b> `required`
+		 - _BLE MAC address of the thermostat in 00:00:00:00:00:00 format_
+		 - Type: `string`
+		 - <i id="#config.schema.json/definitions/thermostat/properties/address">path: #config.schema.json/definitions/thermostat/properties/address</i>
+		 - Length: between 17 and 17
+	 - <b id="#config.schema.json/definitions/thermostat/properties/secret_key">secret_key</b> `required`
+		 - _Secret pairing key of the thermostat as hex string, 16 bytes, 32 hex chars_
+		 - Type: `string`
+		 - <i id="#config.schema.json/definitions/thermostat/properties/secret_key">path: #config.schema.json/definitions/thermostat/properties/secret_key</i>
+		 - Length: between 32 and 32
+
+_Generated with [json-schema-md-doc](https://brianwendt.github.io/json-schema-md-doc/)_
