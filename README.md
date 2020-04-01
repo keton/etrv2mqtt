@@ -14,8 +14,7 @@ virtualenv ~/venv/etrv2mqtt
 ```
 
 ## Configuration
-
-`config.json` example:
+[`config.json`](docs/config_json.md) example:
 ```json
 {
     "$schema": "https://raw.githubusercontent.com/keton/etrv2mqtt/master/etrv2mqtt/schemas/config.schema.json",
