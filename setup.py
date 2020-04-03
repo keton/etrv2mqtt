@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="etrv2mqtt",
-    version="0.0.1",
+    version="0.0.2",
     author="Michał Lower",
     author_email="keton22@gmail.com",
     description="MQTT bridge for Danfoss Eco BLE thermostats and Home Assistant",
