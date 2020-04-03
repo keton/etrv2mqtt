@@ -3,7 +3,6 @@ import json
 from dataclasses import dataclass
 from etrv2mqtt.config import Config
 
-
 @dataclass
 class AutodiscoveryResult():
     topic: str
@@ -79,6 +78,21 @@ class Autodiscovery():
         }
     }
     """)
+
+    _last_update_template = json.loads("""
+    {
+        "device_class": "timestamp",
+        "name": "Kitchen Last Update",
+        "unique_id":"0000_last_update",
+        "state_topic": "etrv/kitchen/state",
+        "value_template": "{{ value_json.last_update }}",
+        "device": {
+            "identifiers":"0000",
+            "manufacturer": "Danfoss",
+            "model": "eTRV"
+        }
+    }
+    """)
     
     def __init__(self, config:Config):
         self._config=config
@@ -135,6 +149,17 @@ class Autodiscovery():
         autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'temperature')
         
         autodiscovery_msg=self._autodiscovery_payload(self._room_temperature_template, dev_mac, dev_name, "Temperature")
+        autodiscovery_msg['state_topic'] = '/'.join(( 
+            self._config.mqtt.base_topic,
+            dev_name,
+            'state'
+        ))
+        return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
+
+    def register_last_update_timestamp(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'last_update')
+        
+        autodiscovery_msg=self._autodiscovery_payload(self._last_update_template, dev_mac, dev_name, "Last Update")
         autodiscovery_msg['state_topic'] = '/'.join(( 
             self._config.mqtt.base_topic,
             dev_name,
