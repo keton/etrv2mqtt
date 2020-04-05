@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "etrv2mqtt",
+            "type": "python",
+            "request": "launch",
+            "module": "etrv2mqtt.cli",
+            "args": ["${input:configfile}"]
+        },
+        {
+            "name": "dummy2mqtt",
+            "type": "python",
+            "request": "launch",
+            "module": "tests.dummy2mqtt",
+            "args": ["${input:configfile}"]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "configfile",
+            "type": "promptString",
+            "default": "test.config.json",
+            "description": "Configuration file to use"
+        }
+    ]
+}
