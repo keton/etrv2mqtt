@@ -9,17 +9,18 @@
 		 - **_Items_**
 		 - <i id="#config.schema.json/properties/thermostats/items">path: #config.schema.json/properties/thermostats/items</i>
 		 - &#36;ref: [#/definitions/thermostat](#/definitions/thermostat)
- - <b id="#config.schema.json/properties/mqtt">mqtt</b> `required`
+ - <b id="#config.schema.json/properties/mqtt">mqtt</b>
 	 - _MQTT Server settings_
 	 - Type: `object`
 	 - <i id="#config.schema.json/properties/mqtt">path: #config.schema.json/properties/mqtt</i>
+	 - Default: `[object Object]`
 	 - **_Properties_**
-		 - <b id="#config.schema.json/properties/mqtt/properties/server">server</b> `required`
+		 - <b id="#config.schema.json/properties/mqtt/properties/server">server</b>
 			 - _MQTT server name_
 			 - Type: `string`
 			 - <i id="#config.schema.json/properties/mqtt/properties/server">path: #config.schema.json/properties/mqtt/properties/server</i>
 			 - Default: _"localhost"_
-		 - <b id="#config.schema.json/properties/mqtt/properties/port">port</b> `required`
+		 - <b id="#config.schema.json/properties/mqtt/properties/port">port</b>
 			 - _MQTT server port_
 			 - Type: `integer`
 			 - <i id="#config.schema.json/properties/mqtt/properties/port">path: #config.schema.json/properties/mqtt/properties/port</i>
@@ -33,12 +34,12 @@
 			 - _password required to connect_
 			 - Type: `string`
 			 - <i id="#config.schema.json/properties/mqtt/properties/password">path: #config.schema.json/properties/mqtt/properties/password</i>
-		 - <b id="#config.schema.json/properties/mqtt/properties/base_topic">base_topic</b> `required`
+		 - <b id="#config.schema.json/properties/mqtt/properties/base_topic">base_topic</b>
 			 - _base MQTT topic for all thermostats_
 			 - Type: `string`
 			 - <i id="#config.schema.json/properties/mqtt/properties/base_topic">path: #config.schema.json/properties/mqtt/properties/base_topic</i>
 			 - Default: _"etrv"_
-		 - <b id="#config.schema.json/properties/mqtt/properties/autodiscovery">autodiscovery</b> `required`
+		 - <b id="#config.schema.json/properties/mqtt/properties/autodiscovery">autodiscovery</b>
 			 - _Enable MQTT autodiscovery for Homeassistant and OpenHab_
 			 - Type: `boolean`
 			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery">path: #config.schema.json/properties/mqtt/properties/autodiscovery</i>
@@ -53,28 +54,40 @@
 			 - Type: `boolean`
 			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery_retain">path: #config.schema.json/properties/mqtt/properties/autodiscovery_retain</i>
 			 - Default: _true_
- - <b id="#config.schema.json/properties/poll_interval">poll_interval</b> `required`
-	 - _Interval between thermostat data readouts in seconds_
-	 - Type: `integer`
-	 - <i id="#config.schema.json/properties/poll_interval">path: #config.schema.json/properties/poll_interval</i>
-	 - Default: `3600`
-	 - Range:  &ge; 1
- - <b id="#config.schema.json/properties/retry_limit">retry_limit</b> `required`
-	 - _Limit of BLE connect attempts_
-	 - Type: `integer`
-	 - <i id="#config.schema.json/properties/retry_limit">path: #config.schema.json/properties/retry_limit</i>
-	 - Default: `5`
-	 - Range:  &ge; 0
- - <b id="#config.schema.json/properties/stay_connected">stay_connected</b>
-	 - _Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery._
-	 - Type: `boolean`
-	 - <i id="#config.schema.json/properties/stay_connected">path: #config.schema.json/properties/stay_connected</i>
-	 - Default: _false_
- - <b id="#config.schema.json/properties/report_room_temperature">report_room_temperature</b>
-	 - _Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery_
-	 - Type: `boolean`
-	 - <i id="#config.schema.json/properties/report_room_temperature">path: #config.schema.json/properties/report_room_temperature</i>
-	 - Default: _true_
+ - <b id="#config.schema.json/properties/options">options</b>
+	 - _Options common for all thermostats_
+	 - Type: `object`
+	 - <i id="#config.schema.json/properties/options">path: #config.schema.json/properties/options</i>
+	 - Default: `[object Object]`
+	 - **_Properties_**
+		 - <b id="#config.schema.json/properties/options/properties/poll_interval">poll_interval</b>
+			 - _Interval between thermostat data readouts in seconds_
+			 - Type: `integer`
+			 - <i id="#config.schema.json/properties/options/properties/poll_interval">path: #config.schema.json/properties/options/properties/poll_interval</i>
+			 - Default: `3600`
+			 - Range:  &ge; 1
+		 - <b id="#config.schema.json/properties/options/properties/retry_limit">retry_limit</b>
+			 - _Limit of BLE connect attempts_
+			 - Type: `integer`
+			 - <i id="#config.schema.json/properties/options/properties/retry_limit">path: #config.schema.json/properties/options/properties/retry_limit</i>
+			 - Default: `5`
+			 - Range:  &ge; 0
+		 - <b id="#config.schema.json/properties/options/properties/stay_connected">stay_connected</b>
+			 - _Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery._
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/options/properties/stay_connected">path: #config.schema.json/properties/options/properties/stay_connected</i>
+			 - Default: _false_
+		 - <b id="#config.schema.json/properties/options/properties/report_room_temperature">report_room_temperature</b>
+			 - _Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery_
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/options/properties/report_room_temperature">path: #config.schema.json/properties/options/properties/report_room_temperature</i>
+			 - Default: _true_
+		 - <b id="#config.schema.json/properties/options/properties/setpoint_debounce_time">setpoint_debounce_time</b>
+			 - _Delay in seconds between getting setpoint value over MQTT and applying it to the thermostat. Used for debouncing Home Assistant climate control behaviour._
+			 - Type: `integer`
+			 - <i id="#config.schema.json/properties/options/properties/setpoint_debounce_time">path: #config.schema.json/properties/options/properties/setpoint_debounce_time</i>
+			 - Default: `3`
+			 - Range:  &ge; 1
 # definitions
 
  - Type: `object`

@@ -14,18 +14,10 @@ virtualenv ~/venv/etrv2mqtt
 ```
 
 ## Configuration
-[`config.json`](docs/config_json.md) example:
+Minimal `config.json` example. All parameters are described [here](docs/config_json.md).
 ```json
 {
     "$schema": "https://raw.githubusercontent.com/keton/etrv2mqtt/master/etrv2mqtt/schemas/config.schema.json",
-    "mqtt": {
-        "base_topic": "etrv",
-        "server": "localhost",
-        "port": 1883,
-        "autodiscovery": true
-    },
-    "poll_interval": 600,
-    "retry_limit": 5,
     "thermostats": [
         {
             "topic": "Room",
