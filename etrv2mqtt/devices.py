@@ -8,7 +8,7 @@ from etrv2mqtt.config import Config, ThermostatConfig
 from etrv2mqtt.etrvutils import eTRVUtils
 from etrv2mqtt.mqtt import Mqtt
 from typing import Type, Dict, NoReturn
-
+import schedule
 
 class DeviceBase(ABC):
     def __init__(self, thermostat_config:ThermostatConfig, config:Config):
@@ -76,12 +76,26 @@ class DeviceManager():
             device.poll(self._mqtt)
 
     def poll_forever(self) -> NoReturn:
+        schedule.every(self._config.poll_interval).seconds.do(self._poll_devices)
+        mqtt_was_connected:bool=False
+
         while True:
             if self._mqtt.is_connected():
-                self._poll_devices()
-                time.sleep(self._config.poll_interval)
+                # run all pending jobs on connect
+                if not mqtt_was_connected:
+                    mqtt_was_connected=True
+                    schedule.run_all(delay_seconds=1)
+                
+                schedule.run_pending()
+                time.sleep(1)
             else:
+                mqtt_was_connected=False
                 time.sleep(2)
+        
+    def _set_temerature_task(self, device:DeviceBase, temperature: float):
+        device.set_temperature(self._mqtt, temperature)
+        # this will cause the task to be executed only once
+        return schedule.CancelJob
 
     def _set_temperature_callback(self, mqtt:Mqtt, name: str, temperature: float):
         if name not in self._devices.keys():
@@ -89,4 +103,9 @@ class DeviceManager():
                 "Device {} not found", name)
             return
         device = self._devices[name]
-        device.set_temperature(self._mqtt, temperature)
+
+        # cancel pending temeperature update for the same device
+        schedule.clear(device)
+
+        # schedule temeperature update
+        schedule.every(self._config.setpoint_debounce_time).seconds.do(self._set_temerature_task, device, temperature).tag(device)
