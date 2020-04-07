@@ -77,6 +77,12 @@
             "type": "boolean",
             "description": "Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery",
             "default": true
+        },
+        "setpoint_debounce_time": {
+            "type": "integer",
+            "description": "Delay in seconds between getting setpoint value over MQTT and applying it to the thermostat. Used for debouncing Home Assistant climate control behaviour.",
+            "default": 3,
+            "minimum": 1
         }
     },
     "definitions": {

@@ -47,6 +47,7 @@ class Config:
         self.poll_interval:int = _config_json['poll_interval']
         self.stay_connected:bool = _config_json['stay_connected'] if 'stay_connected' in _config_json.keys() else False
         self.report_room_temperature:bool = _config_json['report_room_temperature'] if 'report_room_temperature' in _config_json.keys() else True
+        self.setpoint_debounce_time:int = _config_json['setpoint_debounce_time'] if 'setpoint_debounce_time' in _config_json.keys() else 3
         self.thermostats:Dict[str, ThermostatConfig] = {}
         for t in _config_json['thermostats']:
             self.thermostats[t['topic']] = ThermostatConfig(
