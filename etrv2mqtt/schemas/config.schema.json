@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/schema#",
     "$id": "https://raw.githubusercontent.com/keton/etrv2mqtt/master/etrv2mqtt/schemas/config.schema.json",
     "type":"object",
-    "required": ["thermostats", "mqtt", "poll_interval", "retry_limit"],
+    "required": ["thermostats"],
     "properties": {
         "thermostats": {
             "type": "array",
@@ -12,7 +12,7 @@
         "mqtt": {
             "type":"object",
             "description": "MQTT Server settings",
-            "required": ["server", "port", "base_topic", "autodiscovery"],
+            "default": {},
             "properties": {
                 "server": {
                     "type":"string",
@@ -56,33 +56,40 @@
                 }
             }
         },
-        "poll_interval": {
-            "type":"integer",
-            "description": "Interval between thermostat data readouts in seconds",
-            "minimum": 1,
-            "default": 3600
-        },
-        "retry_limit": {
-            "type":"integer",
-            "description": "Limit of BLE connect attempts",
-            "minimum": 0,
-            "default": 5
-        },
-        "stay_connected": {
-            "type": "boolean",
-            "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
-            "default": false
-        },
-        "report_room_temperature": {
-            "type": "boolean",
-            "description": "Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery",
-            "default": true
-        },
-        "setpoint_debounce_time": {
-            "type": "integer",
-            "description": "Delay in seconds between getting setpoint value over MQTT and applying it to the thermostat. Used for debouncing Home Assistant climate control behaviour.",
-            "default": 3,
-            "minimum": 1
+        "options": {
+            "type": "object",
+            "default": {},
+            "description": "Options common for all thermostats",
+            "properties": {
+                "poll_interval": {
+                    "type":"integer",
+                    "description": "Interval between thermostat data readouts in seconds",
+                    "minimum": 1,
+                    "default": 3600
+                },
+                "retry_limit": {
+                    "type":"integer",
+                    "description": "Limit of BLE connect attempts",
+                    "minimum": 0,
+                    "default": 5
+                },
+                "stay_connected": {
+                    "type": "boolean",
+                    "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
+                    "default": false
+                },
+                "report_room_temperature": {
+                    "type": "boolean",
+                    "description": "Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery",
+                    "default": true
+                },
+                "setpoint_debounce_time": {
+                    "type": "integer",
+                    "description": "Delay in seconds between getting setpoint value over MQTT and applying it to the thermostat. Used for debouncing Home Assistant climate control behaviour.",
+                    "default": 3,
+                    "minimum": 1
+                }
+            }
         }
     },
     "definitions": {

@@ -64,11 +64,11 @@ class Config:
             _config_json['mqtt']['autodiscovery_topic'],
             _config_json['mqtt']['autodiscovery_retain']
         )
-        self.retry_limit:int = _config_json['retry_limit']
-        self.poll_interval:int = _config_json['poll_interval']
-        self.stay_connected:bool = _config_json['stay_connected']
-        self.report_room_temperature:bool = _config_json['report_room_temperature']
-        self.setpoint_debounce_time:int = _config_json['setpoint_debounce_time']
+        self.retry_limit:int = _config_json['options']['retry_limit']
+        self.poll_interval:int = _config_json['options']['poll_interval']
+        self.stay_connected:bool = _config_json['options']['stay_connected']
+        self.report_room_temperature:bool = _config_json['options']['report_room_temperature']
+        self.setpoint_debounce_time:int = _config_json['options']['setpoint_debounce_time']
         self.thermostats:Dict[str, ThermostatConfig] = {}
 
         for t in _config_json['thermostats']:
