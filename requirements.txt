@@ -8,6 +8,7 @@ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect
 loguru==0.4.1
 paho-mqtt==1.5.0
 pyrsistent==0.15.7
+schedule==0.6.0
 six==1.14.0
 termcolor==1.1.0
 xxtea==2.0.0
