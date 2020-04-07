@@ -34,9 +34,14 @@ class TRVDevice(DeviceBase):
     def poll(self, mqtt:Mqtt):
         try:
             logger.debug("Polling data from {}", self._name)
+            
+            if not self._device.is_connected():
+                self._device.connect()
+            
             ret = eTRVUtils.read_device(self._device)
             logger.debug(str(ret))
             mqtt.publish_device_data(self._name, str(ret))
+
             if self._stay_connected == False:
                 self._device.disconnect()
         except btle.BTLEDisconnectError as e:
@@ -45,6 +50,9 @@ class TRVDevice(DeviceBase):
     def set_temperature(self, mqtt:Mqtt, temperature: float):
         try:
             logger.info("Setting {} to {}C", self._name, temperature)
+            
+            if not self._device.is_connected():
+                self._device.connect()
             eTRVUtils.set_temperature(self._device, temperature)
             # Home assistant needs to see updated temperature value to confirm change
             self.poll(mqtt)
