@@ -70,8 +70,11 @@ class Config:
         self.report_room_temperature:bool = _config_json['report_room_temperature']
         self.setpoint_debounce_time:int = _config_json['setpoint_debounce_time']
         self.thermostats:Dict[str, ThermostatConfig] = {}
-        
+
         for t in _config_json['thermostats']:
+            if t['topic'] in self.thermostats.keys():
+                raise ValueError("Duplicate thermostat topic: "+t['topic'])
+            
             self.thermostats[t['topic']] = ThermostatConfig(
                 t['topic'],
                 t['address'],
