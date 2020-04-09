@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="etrv2mqtt",
-    version="0.0.3",
+    version="1.0.0",
     author="Michał Lower",
     author_email="keton22@gmail.com",
     description="MQTT bridge for Danfoss Eco BLE thermostats and Home Assistant",
@@ -22,6 +22,7 @@ setuptools.setup(
             "etrv2mqtt = etrv2mqtt.cli:entrypoint",
         ]
     },
-    install_requires=('jsonschema', 'loguru', 'paho-mqtt', 'schedule', 'libetrv @ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect#egg=libetrv',),
+    install_requires=('jsonschema', 'loguru', 'paho-mqtt', 'schedule',
+                      'libetrv @ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect#egg=libetrv',),
     setup_requires=('wheel'),
 )

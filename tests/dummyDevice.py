@@ -6,6 +6,7 @@ from etrv2mqtt.etrvutils import eTRVData
 from loguru import logger
 from datetime import datetime
 
+
 @dataclass
 class _eTRVDummyDevice:
     name: str
@@ -15,19 +16,21 @@ class _eTRVDummyDevice:
     set_point: float = 21
     current_temp: float = 21
 
-class DummyDevice(DeviceBase):
-    def __init__(self, thermostat_config:ThermostatConfig, config:Config):
-        super().__init__(thermostat_config, config)
-        self._device=_eTRVDummyDevice(thermostat_config.topic, thermostat_config.address, bytes.fromhex(thermostat_config.secret_key))
 
-    def poll(self, mqtt:Mqtt):
+class DummyDevice(DeviceBase):
+    def __init__(self, thermostat_config: ThermostatConfig, config: Config):
+        super().__init__(thermostat_config, config)
+        self._device = _eTRVDummyDevice(
+            thermostat_config.topic, thermostat_config.address, bytes.fromhex(thermostat_config.secret_key))
+
+    def poll(self, mqtt: Mqtt):
         logger.debug("Polling data from {}", self._device.name)
-        ret = eTRVData(self._device.name, self._device.battery, self._device.current_temp, self._device.set_point, datetime.now())
+        ret = eTRVData(self._device.name, self._device.battery,
+                       self._device.current_temp, self._device.set_point, datetime.now())
         logger.debug(str(ret))
         mqtt.publish_device_data(self._device.name, str(ret))
-        
-    def set_temperature(self, mqtt:Mqtt, temperature: float):
+
+    def set_temperature(self, mqtt: Mqtt, temperature: float):
         logger.debug("Setting {} to {}C", self._device.name, temperature)
-        self._device.set_point=temperature
+        self._device.set_point = temperature
         self.poll(mqtt)
-    

@@ -3,13 +3,15 @@ import json
 from dataclasses import dataclass
 from etrv2mqtt.config import Config
 
+
 @dataclass
 class AutodiscoveryResult():
     topic: str
     payload: str
 
+
 class Autodiscovery():
-    
+
     _termostat_template = json.loads("""
     {
         "~": "etrv/kitchen",
@@ -29,7 +31,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -45,7 +50,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -59,7 +67,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -75,7 +86,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -90,14 +104,17 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
-    
-    def __init__(self, config:Config):
-        self._config=config
-    
-    def _autodiscovery_topic(self, dev_mac:str, entity_class:str, entity_type: str)->str:
+
+    def __init__(self, config: Config):
+        self._config = config
+
+    def _autodiscovery_topic(self, dev_mac: str, entity_class: str, entity_type: str) -> str:
         return '/'.join((
             self._config.mqtt.autodiscovery_topic,
             entity_class,
@@ -105,62 +122,73 @@ class Autodiscovery():
             dev_mac.replace(':', '_')+'_'+entity_type,
             'config'
         ))
-    
-    def _autodiscovery_payload(self, template:dict, dev_mac:str, dev_name:str, sensor_name: str)->dict:
+
+    def _autodiscovery_payload(self, template: dict, dev_mac: str, dev_name: str, sensor_name: str) -> dict:
         payload = copy.deepcopy(template)
         payload['name'] = dev_name+' '+sensor_name
-        payload['unique_id'] = dev_mac.replace(':', '_')+'_'+sensor_name.lower().replace(' ','_')
+        payload['unique_id'] = dev_mac.replace(
+            ':', '_')+'_'+sensor_name.lower().replace(' ', '_')
         payload['device']['name'] = dev_name
         payload['device']['identifiers'] = dev_mac
+        payload['availability_topic'] = self._config.mqtt.base_topic + "/state"
         return payload
 
-    def register_termostat(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
-        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'climate', 'thermostat')
-        
-        autodiscovery_msg=self._autodiscovery_payload(self._termostat_template, dev_mac, dev_name, "Thermostat")
+    def register_termostat(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(
+            dev_mac, 'climate', 'thermostat')
+
+        autodiscovery_msg = self._autodiscovery_payload(
+            self._termostat_template, dev_mac, dev_name, "Thermostat")
         autodiscovery_msg['~'] = self._config.mqtt.base_topic+'/'+dev_name
 
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
-    def register_battery(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
-        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'battery')
-        
-        autodiscovery_msg=self._autodiscovery_payload(self._battery_template, dev_mac, dev_name, "Battery")
-        autodiscovery_msg['state_topic'] = '/'.join(( 
+    def register_battery(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(
+            dev_mac, 'sensor', 'battery')
+
+        autodiscovery_msg = self._autodiscovery_payload(
+            self._battery_template, dev_mac, dev_name, "Battery")
+        autodiscovery_msg['state_topic'] = '/'.join((
             self._config.mqtt.base_topic,
             dev_name,
             'state'
         ))
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
-    def register_reported_name(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
-        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'rep_name')
-        
-        autodiscovery_msg=self._autodiscovery_payload(self._reported_name_template, dev_mac, dev_name, "Reported name")
-        autodiscovery_msg['state_topic'] = '/'.join(( 
+    def register_reported_name(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(
+            dev_mac, 'sensor', 'rep_name')
+
+        autodiscovery_msg = self._autodiscovery_payload(
+            self._reported_name_template, dev_mac, dev_name, "Reported name")
+        autodiscovery_msg['state_topic'] = '/'.join((
             self._config.mqtt.base_topic,
             dev_name,
             'state'
         ))
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
+    def register_room_temperature(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(
+            dev_mac, 'sensor', 'temperature')
 
-    def register_room_temperature(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
-        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'temperature')
-        
-        autodiscovery_msg=self._autodiscovery_payload(self._room_temperature_template, dev_mac, dev_name, "Temperature")
-        autodiscovery_msg['state_topic'] = '/'.join(( 
+        autodiscovery_msg = self._autodiscovery_payload(
+            self._room_temperature_template, dev_mac, dev_name, "Temperature")
+        autodiscovery_msg['state_topic'] = '/'.join((
             self._config.mqtt.base_topic,
             dev_name,
             'state'
         ))
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
-    def register_last_update_timestamp(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
-        autodiscovery_topic = self._autodiscovery_topic(dev_mac, 'sensor', 'last_update')
-        
-        autodiscovery_msg=self._autodiscovery_payload(self._last_update_template, dev_mac, dev_name, "Last Update")
-        autodiscovery_msg['state_topic'] = '/'.join(( 
+    def register_last_update_timestamp(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+        autodiscovery_topic = self._autodiscovery_topic(
+            dev_mac, 'sensor', 'last_update')
+
+        autodiscovery_msg = self._autodiscovery_payload(
+            self._last_update_template, dev_mac, dev_name, "Last Update")
+        autodiscovery_msg['state_topic'] = '/'.join((
             self._config.mqtt.base_topic,
             dev_name,
             'state'

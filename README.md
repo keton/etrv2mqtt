@@ -69,5 +69,17 @@ Configured devices should be automatically added to homeassistant as long as MQT
     sudo systemctl enable etrv2mqtt@YOUR_USER.service
     sudo systemctl start etrv2mqtt@YOUR_USER.service
     ```
+## Home Assistant configuration
 
-    
+By default etrv2mqtt will emit autodiscovery messages so devices will be automatically added to Home Assistant. 
+It will also listen to birth messages and will update thermostat values on HA restarts. 
+
+All this requires a bit of configuration on Home Assistant side. Please make sure you have following directives in your `configuration.yaml`:
+```yaml
+mqtt:
+  discovery: true
+  broker: [YOUR MQTT BROKER]
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+```
