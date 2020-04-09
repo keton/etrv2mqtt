@@ -54,6 +54,16 @@
 			 - Type: `boolean`
 			 - <i id="#config.schema.json/properties/mqtt/properties/autodiscovery_retain">path: #config.schema.json/properties/mqtt/properties/autodiscovery_retain</i>
 			 - Default: _true_
+		 - <b id="#config.schema.json/properties/mqtt/properties/hass_birth_topic">hass_birth_topic</b>
+			 - _Home assistant birth message (program started) topic_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/hass_birth_topic">path: #config.schema.json/properties/mqtt/properties/hass_birth_topic</i>
+			 - Default: _"hass/status"_
+		 - <b id="#config.schema.json/properties/mqtt/properties/hass_birth_payload">hass_birth_payload</b>
+			 - _Home assistant birth message (program started) payload_
+			 - Type: `string`
+			 - <i id="#config.schema.json/properties/mqtt/properties/hass_birth_payload">path: #config.schema.json/properties/mqtt/properties/hass_birth_payload</i>
+			 - Default: _"online"_
  - <b id="#config.schema.json/properties/options">options</b>
 	 - _Options common for all thermostats_
 	 - Type: `object`
