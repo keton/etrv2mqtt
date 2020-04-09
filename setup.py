@@ -22,6 +22,7 @@ setuptools.setup(
             "etrv2mqtt = etrv2mqtt.cli:entrypoint",
         ]
     },
-    install_requires=('jsonschema', 'loguru', 'paho-mqtt', 'schedule', 'libetrv @ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect#egg=libetrv',),
+    install_requires=('jsonschema', 'loguru', 'paho-mqtt', 'schedule',
+                      'libetrv @ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect#egg=libetrv',),
     setup_requires=('wheel'),
 )

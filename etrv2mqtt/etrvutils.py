@@ -5,6 +5,7 @@ from libetrv.bluetooth import btle
 from libetrv.device import eTRVDevice
 from datetime import datetime
 
+
 @dataclass(repr=False)
 class eTRVData:
     name: str
@@ -16,7 +17,7 @@ class eTRVData:
     def _datetimeconverter(self, o):
         if isinstance(o, datetime):
             return o.__str__()
-        else: 
+        else:
             return o
 
     def __repr__(self):

@@ -13,9 +13,10 @@ def main(config_file: str):
     except Exception as e:
         logger.error(e)
         sys.exit(1)
-    
-    deviceManager=DeviceManager(config, DummyDevice)
+
+    deviceManager = DeviceManager(config, DummyDevice)
     deviceManager.poll_forever()
+
 
 def entrypoint():
     if len(sys.argv) < 2:
@@ -27,6 +28,7 @@ def entrypoint():
         main(sys.argv[1])
     except KeyboardInterrupt:
         pass
+
 
 if __name__ == "__main__":
     entrypoint()
