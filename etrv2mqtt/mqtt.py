@@ -64,9 +64,12 @@ class Mqtt(object):
                 self._publish_autodiscovery_result(ad.register_last_update_timestamp(
                     thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
 
-
+        # subscribe to set temperature topics
         self._client.subscribe(
             self._config.mqtt.base_topic+'/+/set')
+        
+        # subscribe to Home Assistant birth topic
+        self._client.subscribe(self._config.mqtt.hass_birth_topic)
 
         self._is_connected = True
 
@@ -75,13 +78,25 @@ class Mqtt(object):
         self._is_connected = False
 
     def _on_message(self, client, userdata, msg):
-        name = msg.topic.split('/')[-2]
-        try:
-            if self._set_temperature_callback is not None:
-                self._set_temperature_callback(
-                    self, name, float(msg.payload))
-        except ValueError:
-            logger.warning("{}: {} is not a valid float", name, msg.payload)
+        # hass birth message
+        if msg.topic == self._config.mqtt.hass_birth_topic:
+            try:
+                # MQTT payload can be random bytes
+                payload_str=msg.payload.decode("utf-8") 
+                if payload_str == self._config.mqtt.hass_birth_payload and self._hass_birth_callback is not None:
+                    self._hass_birth_callback(self)
+            except UnicodeError:
+                pass
+        
+        # thermostat set temperature message
+        elif msg.topic.startswith(self._config.mqtt.base_topic) and msg.topic.endswith('/set'):
+            name = msg.topic.split('/')[-2]
+            try:
+                if self._set_temperature_callback is not None:
+                    self._set_temperature_callback(
+                        self, name, float(msg.payload))
+            except ValueError:
+                logger.warning("{}: {} is not a valid float", name, msg.payload)
 
     @property
     def set_temperature_callback(self) -> Callable[[Mqtt, str, float], None]:
@@ -90,3 +105,11 @@ class Mqtt(object):
     @set_temperature_callback.setter
     def set_temperature_callback(self, callback: Callable[[Mqtt, str, float], None]):
         self._set_temperature_callback = callback
+
+    @property
+    def hass_birth_callback(self) -> Callable[[Mqtt], None]:
+        return self._hass_birth_callback
+
+    @hass_birth_callback.setter
+    def hass_birth_callback(self, callback: Callable[[Mqtt], None]):
+        self._hass_birth_callback = callback

@@ -53,6 +53,16 @@
                     "type":"boolean",
                     "default": true,
                     "description": "Set retain bit on autodiscovery related messages"
+                },
+                "hass_birth_topic": {
+                    "type": "string",
+                    "default": "hass/status",
+                    "description": "Home assistant birth message (program started) topic"
+                },
+                "hass_birth_payload": {
+                    "type": "string",
+                    "default": "online",
+                    "description": "Home assistant birth message (program started) payload"
                 }
             }
         },
