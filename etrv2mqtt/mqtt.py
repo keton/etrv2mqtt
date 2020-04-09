@@ -24,12 +24,14 @@ class Mqtt(object):
         self._client.on_connect = self._on_connect
         self._client.on_disconnect = self._on_disconnect
         self._client.on_message = self._on_message
-
+        
         if config.mqtt.user is not None:
             self._client.username_pw_set(
                 config.mqtt.user, password=config.mqtt.password)
         logger.debug("connecting to {}:{}",
                      config.mqtt.server, config.mqtt.port)
+
+        self._client.will_set(self._config.mqtt.base_topic+'/state', 'offline', retain=True)
         self._client.connect_async(config.mqtt.server, port=config.mqtt.port)
         self._client.loop_start()
 
@@ -44,6 +46,9 @@ class Mqtt(object):
 
     def _on_connect(self, client, userdata, flags, rc):
         logger.info("Connected to MQTT server")
+
+        self._client.publish(self._config.mqtt.base_topic+'/state', 'online', retain=True)
+
         if self._config.mqtt.autodiscovery:
             ad = Autodiscovery(self._config)
             for thermostat in self._config.thermostats.values():

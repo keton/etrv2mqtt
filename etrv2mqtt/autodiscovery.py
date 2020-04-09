@@ -29,7 +29,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -45,7 +48,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -59,7 +65,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -75,7 +84,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
 
@@ -90,7 +102,10 @@ class Autodiscovery():
             "identifiers":"0000",
             "manufacturer": "Danfoss",
             "model": "eTRV"
-        }
+        },
+        "availability_topic": "etrv2mqtt/state",
+        "payload_available": "online",
+        "payload_not_available": "offline"
     }
     """)
     
@@ -112,6 +127,7 @@ class Autodiscovery():
         payload['unique_id'] = dev_mac.replace(':', '_')+'_'+sensor_name.lower().replace(' ','_')
         payload['device']['name'] = dev_name
         payload['device']['identifiers'] = dev_mac
+        payload['availability_topic'] = self._config.mqtt.base_topic + "/state"
         return payload
 
     def register_termostat(self, dev_name: str, dev_mac: str)->AutodiscoveryResult:
