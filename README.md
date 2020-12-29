@@ -7,6 +7,12 @@ Device links are supported so Home Assistant sees all sensors as a single logica
 ![device properties example](docs/device_properties.png)
 
 ## Installation
+Install required packages (for Raspberry pi 3 and later)
+```sh
+sudo apt install bluez-tools bluez bluez-firmware bluez-hcidump pi-bluetooth
+```
+
+Install etrv2mqtt
 ```sh
 mkdir -p ~/venv/etrv2mqtt
 virtualenv ~/venv/etrv2mqtt
