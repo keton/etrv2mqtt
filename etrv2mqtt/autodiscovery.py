@@ -23,7 +23,7 @@ class Autodiscovery():
         "curr_temp_t":"~/state",
         "curr_temp_tpl":"{{ value_json.room_temp }}",
         "min_temp":"10",
-        "max_temp":"30",
+        "max_temp":"40",
         "temp_step":"0.5",
         "modes":["heat"],
         "send_if_off": true,
