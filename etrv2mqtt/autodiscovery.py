@@ -12,12 +12,16 @@ class AutodiscoveryResult():
 
 class Autodiscovery():
 
-    _termostat_template = json.loads("""
+    _thermostat_template = json.loads("""
     {
         "~": "etrv/kitchen",
         "name":"Kitchen",
         "unique_id":"0000_thermostat",
-        "temp_cmd_t":"~/set",
+        "hold_command_topic":"~/set/preset_mode",
+        "hold_state_topic":"~/state",
+        "hold_state_template":"{{ value_json.preset_mode }}",
+        "hold_modes":["Manual","Scheduled","Vacation"],
+        "temp_cmd_t":"~/set/temperature",
         "temp_stat_t":"~/state",
         "temp_stat_tpl":"{{ value_json.set_point }}",
         "curr_temp_t":"~/state",
@@ -133,12 +137,12 @@ class Autodiscovery():
         payload['availability_topic'] = self._config.mqtt.base_topic + "/state"
         return payload
 
-    def register_termostat(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
+    def register_thermostat(self, dev_name: str, dev_mac: str) -> AutodiscoveryResult:
         autodiscovery_topic = self._autodiscovery_topic(
             dev_mac, 'climate', 'thermostat')
 
         autodiscovery_msg = self._autodiscovery_payload(
-            self._termostat_template, dev_mac, dev_name, "Thermostat")
+            self._thermostat_template, dev_mac, dev_name, "Thermostat")
         autodiscovery_msg['~'] = self._config.mqtt.base_topic+'/'+dev_name
 
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))

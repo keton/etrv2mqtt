@@ -23,6 +23,10 @@ class DeviceBase(ABC):
     def set_temperature(self, mqtt: Mqtt, temperature: float):
         pass
 
+    @abstractmethod
+    def set_mode(self, mqtt: Mqtt, mode: bytes):
+        pass
+
 
 class TRVDevice(DeviceBase):
     def __init__(self, thermostat_config: ThermostatConfig, config: Config):
@@ -62,6 +66,20 @@ class TRVDevice(DeviceBase):
         except btle.BTLEDisconnectError as e:
             logger.error(e)
 
+    def set_mode(self, mqtt: Mqtt, mode: bytes):
+        try:
+            logger.info("Setting {} to {}", self._name, mode)
+
+            if not self._device.is_connected():
+                self._device.connect()
+            eTRVUtils.set_mode(self._device, mode)
+            # Home assistant needs to see updated settings value to confirm change
+            self.poll(mqtt)
+        except btle.BTLEDisconnectError as e:
+            logger.error(e)
+        except KeyError as e:
+            logger.warning("Invalid preset mode: {}", mode)
+
 
 class DeviceManager():
     def __init__(self, config: Config, deviceClass: Type[DeviceBase]):
@@ -75,6 +93,7 @@ class DeviceManager():
 
         self._mqtt = Mqtt(self._config)
         self._mqtt.set_temperature_callback = self._set_temperature_callback
+        self._mqtt.set_mode_callback = self._set_mode_callback
         self._mqtt.hass_birth_callback = self._hass_birth_callback
 
     def _poll_devices(self):
@@ -99,7 +118,7 @@ class DeviceManager():
                 mqtt_was_connected = False
                 time.sleep(2)
 
-    def _set_temerature_task(self, device: DeviceBase, temperature: float):
+    def _set_temperature_task(self, device: DeviceBase, temperature: float):
         device.set_temperature(self._mqtt, temperature)
         # this will cause the task to be executed only once
         return schedule.CancelJob
@@ -111,12 +130,31 @@ class DeviceManager():
             return
         device = self._devices[name]
 
-        # cancel pending temeperature update for the same device
+        # cancel pending temperature update for the same device
         schedule.clear(device)
 
-        # schedule temeperature update
+        # schedule temperature update
         schedule.every(self._config.setpoint_debounce_time).seconds.do(
-            self._set_temerature_task, device, temperature).tag(device)
+            self._set_temperature_task, device, temperature).tag(device)
+
+    def _set_mode_task(self, device: DeviceBase, mode: bytes):
+        device.set_mode(self._mqtt, mode)
+        # this will cause the task to be executed only once
+        return schedule.CancelJob
+
+    def _set_mode_callback(self, mqtt: Mqtt, name: str, mode: bytes):
+        if name not in self._devices.keys():
+            logger.warning(
+                "Device {} not found", name)
+            return
+        device = self._devices[name]
+
+        # cancel pending updates for the same device
+        schedule.clear(device)
+
+        # schedule update
+        schedule.every(self._config.setpoint_debounce_time).seconds.do(
+            self._set_mode_task, device, mode).tag(device)
 
     def _hass_birth_callback(self, mqtt: Mqtt):
         schedule.run_all(delay_seconds=1)

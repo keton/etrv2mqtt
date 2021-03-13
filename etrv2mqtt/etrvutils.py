@@ -1,10 +1,16 @@
 import json
+import enum
 from dataclasses import dataclass
 
 from libetrv.bluetooth import btle
 from libetrv.device import eTRVDevice
+from libetrv.data_struct import ScheduleMode
 from datetime import datetime
 
+class PresetModes(enum.Enum):
+    Manual = ScheduleMode.MANUAL
+    Scheduled = ScheduleMode.SCHEDULED
+    Vacation = ScheduleMode.VACATION
 
 @dataclass(repr=False)
 class eTRVData:
@@ -12,6 +18,7 @@ class eTRVData:
     battery: int
     room_temp: float
     set_point: float
+    preset_mode: str
     last_update: datetime
 
     def _datetimeconverter(self, o):
@@ -31,8 +38,24 @@ class eTRVUtils:
 
     @staticmethod
     def read_device(device: eTRVDevice) -> eTRVData:
-        return eTRVData(device.name, device.battery, device.temperature.room_temperature, device.temperature.set_point_temperature, datetime.now())
+        mode: str
+        try:
+            mode = PresetModes(device.settings.schedule_mode).name
+        except ValueError:
+            mode = "None"
+
+        return eTRVData(device.name,
+                        device.battery,
+                        device.temperature.room_temperature,
+                        device.temperature.set_point_temperature,
+                        mode,
+                        datetime.now())
 
     @staticmethod
     def set_temperature(device: eTRVDevice, temperature: float):
         device.temperature.set_point_temperature = float(temperature)
+
+    @staticmethod
+    def set_mode(device: eTRVDevice, mode: bytes):
+        device.settings.schedule_mode = PresetModes[mode.decode('utf-8')].value
+        device.settings.save()
