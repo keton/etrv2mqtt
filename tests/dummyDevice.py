@@ -5,6 +5,7 @@ from etrv2mqtt.config import ThermostatConfig, Config
 from etrv2mqtt.etrvutils import eTRVData
 from loguru import logger
 from datetime import datetime
+from datetime import timezone
 
 
 @dataclass
@@ -26,7 +27,7 @@ class DummyDevice(DeviceBase):
     def poll(self, mqtt: Mqtt):
         logger.debug("Polling data from {}", self._device.name)
         ret = eTRVData(self._device.name, self._device.battery,
-                       self._device.current_temp, self._device.set_point, datetime.now())
+                       self._device.current_temp, self._device.set_point, datetime.now(timezone.utc))
         logger.debug(str(ret))
         mqtt.publish_device_data(self._device.name, str(ret))
 

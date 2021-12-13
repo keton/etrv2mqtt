@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from libetrv.bluetooth import btle
 from libetrv.device import eTRVDevice
 from datetime import datetime
+from datetime import timezone
 
 
 @dataclass(repr=False)
@@ -31,7 +32,8 @@ class eTRVUtils:
 
     @staticmethod
     def read_device(device: eTRVDevice) -> eTRVData:
-        return eTRVData(device.name, device.battery, device.temperature.room_temperature, device.temperature.set_point_temperature, datetime.now())
+        return eTRVData(device.name, device.battery, device.temperature.room_temperature,
+            device.temperature.set_point_temperature, datetime.now(timezone.utc))
 
     @staticmethod
     def set_temperature(device: eTRVDevice, temperature: float):
