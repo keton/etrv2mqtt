@@ -4,7 +4,7 @@ from loguru import logger
 
 from etrv2mqtt.config import Config
 from etrv2mqtt.devices import DeviceManager
-from tests.dummyDevice import DummyDevice
+from .dummyDevice import DummyDevice
 
 
 def main(config_file: str):

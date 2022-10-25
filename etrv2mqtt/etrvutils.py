@@ -1,7 +1,6 @@
 import json
 from dataclasses import dataclass
 
-from libetrv.bluetooth import btle
 from libetrv.device import eTRVDevice
 from datetime import datetime
 

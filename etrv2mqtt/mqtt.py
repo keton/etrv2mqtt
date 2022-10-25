@@ -3,11 +3,10 @@ from __future__ import annotations
 from typing import Callable, Dict
 
 import paho.mqtt.client as paho_mqtt
-from libetrv.device import eTRVDevice
 from loguru import logger
 
-from etrv2mqtt.autodiscovery import Autodiscovery, AutodiscoveryResult
-from etrv2mqtt.config import Config
+from .autodiscovery import Autodiscovery, AutodiscoveryResult
+from .config import Config
 
 
 class Mqtt(object):
