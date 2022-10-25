@@ -23,6 +23,6 @@ setuptools.setup(
         ]
     },
     install_requires=('jsonschema', 'loguru', 'paho-mqtt', 'schedule',
-                      'libetrv @ git+https://github.com/keton/libetrv.git@fixes/invalidate_data_on_disconnect#egg=libetrv',),
+                      'libetrv',),
     setup_requires=('wheel'),
 )
