@@ -16,7 +16,7 @@ class eTRVData:
 
     def _datetimeconverter(self, o):
         if isinstance(o, datetime):
-            return o.__str__()
+            return o.astimezone().isoformat()
         else:
             return o
 
