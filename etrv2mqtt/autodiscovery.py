@@ -26,7 +26,6 @@ class Autodiscovery():
         "max_temp":"40",
         "temp_step":"0.5",
         "modes":["heat"],
-        "send_if_off": true,
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
