@@ -53,7 +53,7 @@ class Mqtt(object):
         if self._config.mqtt.autodiscovery:
             ad = Autodiscovery(self._config)
             for thermostat in self._config.thermostats.values():
-                self._publish_autodiscovery_result(ad.register_termostat(
+                self._publish_autodiscovery_result(ad.register_thermostat(
                     thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
                 self._publish_autodiscovery_result(ad.register_battery(
                     thermostat.topic, thermostat.address), self._config.mqtt.autodiscovery_retain)
@@ -67,7 +67,7 @@ class Mqtt(object):
 
         # subscribe to set temperature topics
         self._client.subscribe(
-            self._config.mqtt.base_topic+'/+/set')
+            self._config.mqtt.base_topic+'/+/set/+')
 
         # subscribe to Home Assistant birth topic
         self._client.subscribe(self._config.mqtt.hass_birth_topic)
@@ -79,7 +79,7 @@ class Mqtt(object):
         self._is_connected = False
 
     def _on_message(self, client, userdata, msg):
-        # hass birth message
+        # Hass birth message
         if msg.topic == self._config.mqtt.hass_birth_topic:
             try:
                 # MQTT payload can be random bytes
@@ -89,9 +89,9 @@ class Mqtt(object):
             except UnicodeError:
                 pass
 
-        # thermostat set temperature message
-        elif msg.topic.startswith(self._config.mqtt.base_topic) and msg.topic.endswith('/set'):
-            name = msg.topic.split('/')[-2]
+        # Thermostat set temperature message
+        elif msg.topic.startswith(self._config.mqtt.base_topic) and msg.topic.endswith('/set/temperature'):
+            name = msg.topic.split('/')[-3]
             try:
                 if self._set_temperature_callback is not None:
                     self._set_temperature_callback(
@@ -100,6 +100,13 @@ class Mqtt(object):
                 logger.warning("{}: {} is not a valid float",
                                name, msg.payload)
 
+        # Thermostat set preset mode message
+        elif msg.topic.startswith(self._config.mqtt.base_topic) and msg.topic.endswith('/set/preset_mode'):
+            name = msg.topic.split('/')[-3]
+            if self._set_mode_callback is not None:
+                self._set_mode_callback(
+                    self, name, msg.payload)
+
     @property
     def set_temperature_callback(self) -> Callable[[Mqtt, str, float], None]:
         return self._set_temperature_callback
@@ -107,6 +114,14 @@ class Mqtt(object):
     @set_temperature_callback.setter
     def set_temperature_callback(self, callback: Callable[[Mqtt, str, float], None]):
         self._set_temperature_callback = callback
+
+    @property
+    def set_mode_callback(self) -> Callable[[Mqtt, str, str], None]:
+        return self._set_mode_callback
+
+    @set_mode_callback.setter
+    def set_mode_callback(self, callback: Callable[[Mqtt, str, str], None]):
+        self._set_mode_callback = callback
 
     @property
     def hass_birth_callback(self) -> Callable[[Mqtt], None]:
