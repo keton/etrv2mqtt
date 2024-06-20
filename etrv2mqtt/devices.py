@@ -82,8 +82,12 @@ class DeviceManager():
             device.poll(self._mqtt)
 
     def poll_forever(self) -> NoReturn:
-        schedule.every(self._config.poll_interval).seconds.do(
-            self._poll_devices)
+        if self._config.poll_schedule == "hour_minute":
+            schedule.every().hour.at(":{0:02d}".format(self._config.poll_hour_minute)).do(
+                self._poll_devices)
+        else: # for poll_schedule=interval and as fallback
+            schedule.every(self._config.poll_interval).seconds.do(
+                self._poll_devices)
         mqtt_was_connected: bool = False
 
         while True:

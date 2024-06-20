@@ -71,11 +71,24 @@
             "default": {},
             "description": "Options common for all thermostats",
             "properties": {
+                "poll_schedule": {
+                    "type": "string",
+                    "description": "Polling schedule to use (regular interval, every hour at specified minute)",
+                    "enum": [ "interval", "hour_minute" ],
+                    "default": "interval"
+                },
                 "poll_interval": {
                     "type":"integer",
-                    "description": "Interval between thermostat data readouts in seconds",
+                    "description": "Interval between thermostat data readouts in seconds (only used when poll_schedule is interval)",
                     "minimum": 1,
                     "default": 3600
+                },
+                "poll_hour_minute": {
+                    "type": "integer",
+                    "description": "The minute of the hour polling starts (only used when poll_schedule is hour_minute",
+                    "minimum": 0,
+                    "maximum": 59,
+                    "default": 0
                 },
                 "retry_limit": {
                     "type":"integer",
