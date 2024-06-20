@@ -25,7 +25,9 @@ class Autodiscovery():
         "min_temp":"10",
         "max_temp":"40",
         "temp_step":"0.5",
-        "modes":["heat"],
+        "modes":["auto"],
+        "mode_state_topic":"etrv2mqtt/state",
+        "mode_state_template":"{{ 'auto' }}",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -139,6 +141,7 @@ class Autodiscovery():
         autodiscovery_msg = self._autodiscovery_payload(
             self._termostat_template, dev_mac, dev_name, "Thermostat")
         autodiscovery_msg['~'] = self._config.mqtt.base_topic+'/'+dev_name
+        autodiscovery_msg['mode_state_topic'] = self._config.mqtt.base_topic + "/state"
 
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
