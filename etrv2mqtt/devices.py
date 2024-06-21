@@ -47,8 +47,14 @@ class TRVDevice(DeviceBase):
 
             if self._stay_connected == False:
                 self._device.disconnect()
+        except btle.BTLEInternalError as e:
+            logger.error(e)
+            if self._device.is_connected():
+                self._device.disconnect()
         except btle.BTLEDisconnectError as e:
             logger.error(e)
+            if self._device.is_connected():
+                self._device.disconnect()
 
     def set_temperature(self, mqtt: Mqtt, temperature: float):
         try:
