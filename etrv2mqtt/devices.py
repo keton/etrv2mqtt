@@ -47,6 +47,7 @@ class TRVDevice(DeviceBase):
 
             if self._stay_connected == False:
                 self._device.disconnect()
+            return True
         except btle.BTLEInternalError as e:
             logger.error(e)
             if self._device.is_connected():
@@ -55,6 +56,7 @@ class TRVDevice(DeviceBase):
             logger.error(e)
             if self._device.is_connected():
                 self._device.disconnect()
+        return False
 
     def set_temperature(self, mqtt: Mqtt, temperature: float):
         try:
@@ -84,8 +86,16 @@ class DeviceManager():
         self._mqtt.hass_birth_callback = self._hass_birth_callback
 
     def _poll_devices(self):
+        rerun = []
         for device in self._devices.values():
-            device.poll(self._mqtt)
+            if not device.poll(self._mqtt):
+                if self._config.retry_rerun:
+                    rerun.append(device)
+        if len(rerun)>0:
+            logger.warning("Attempting re-run of failed sensors in 5 seconds")
+            time.sleep(5)
+            for device in rerun:
+                device.poll(self._mqtt)
 
     def poll_forever(self) -> NoReturn:
         if self._config.poll_schedule == "hour_minute":

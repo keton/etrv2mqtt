@@ -96,6 +96,11 @@
                     "minimum": 0,
                     "default": 5
                 },
+                "retry_rerun": {
+                    "type": "boolean",
+                    "description": "Retry failed thermostats once again after the end of the queue",
+                    "default": true
+                },
                 "stay_connected": {
                     "type": "boolean",
                     "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
