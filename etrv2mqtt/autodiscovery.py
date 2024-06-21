@@ -41,12 +41,14 @@ class Autodiscovery():
 
     _battery_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "device_class": "battery",
         "name": "kitchen battery",
         "unique_id":"0000_battery",
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.battery }}",
         "unit_of_measurement": "%",
+        "state_class": "measurement",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -60,6 +62,7 @@ class Autodiscovery():
 
     _reported_name_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "name": "kitchen reported name",
         "unique_id":"0000_rep_name",
         "state_topic": "etrv/kitchen/state",
@@ -83,6 +86,7 @@ class Autodiscovery():
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.room_temp }}",
         "unit_of_measurement": "°C",
+        "state_class": "measurement",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -96,6 +100,7 @@ class Autodiscovery():
 
     _last_update_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "device_class": "timestamp",
         "name": "Kitchen Last Update",
         "unique_id":"0000_last_update",
