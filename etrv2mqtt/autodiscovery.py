@@ -25,6 +25,7 @@ class Autodiscovery():
         "min_temp":"10",
         "max_temp":"40",
         "temp_step":"0.5",
+        "suggested_display_precision": "1",
         "modes":["auto"],
         "mode_state_topic":"etrv2mqtt/state",
         "mode_state_template":"{{ 'auto' }}",
@@ -48,6 +49,7 @@ class Autodiscovery():
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.battery }}",
         "unit_of_measurement": "%",
+        "suggested_display_precision": "0",
         "state_class": "measurement",
         "device": {
             "identifiers":"0000",
@@ -86,6 +88,7 @@ class Autodiscovery():
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.room_temp }}",
         "unit_of_measurement": "°C",
+        "suggested_display_precision": "1",
         "state_class": "measurement",
         "device": {
             "identifiers":"0000",
