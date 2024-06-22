@@ -74,6 +74,7 @@ class Config:
             _config_json['mqtt']['hass_birth_payload'],
         )
         self.retry_limit: int = _config_json['options']['retry_limit']
+        self.retry_rerun: bool = _config_json['options']['retry_rerun']
         self.poll_schedule: str = _config_json['options']['poll_schedule']
         self.poll_interval: int = _config_json['options']['poll_interval']
         self.poll_hour_minute: int = _config_json['options']['poll_hour_minute']
