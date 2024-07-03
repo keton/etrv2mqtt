@@ -8,12 +8,14 @@ from etrv2mqtt.config import Config, ThermostatConfig
 from etrv2mqtt.etrvutils import eTRVUtils
 from etrv2mqtt.mqtt import Mqtt
 from typing import Type, Dict, NoReturn
+import os
 import schedule
 
 
 class DeviceBase(ABC):
     def __init__(self, thermostat_config: ThermostatConfig, config: Config):
         super().__init__()
+        self._config = config
 
     @abstractmethod
     def poll(self, mqtt: Mqtt):
@@ -22,7 +24,6 @@ class DeviceBase(ABC):
     @abstractmethod
     def set_temperature(self, mqtt: Mqtt, temperature: float):
         pass
-
 
 class TRVDevice(DeviceBase):
     def __init__(self, thermostat_config: ThermostatConfig, config: Config):
@@ -65,10 +66,18 @@ class TRVDevice(DeviceBase):
             if not self._device.is_connected():
                 self._device.connect()
             eTRVUtils.set_temperature(self._device, temperature)
+            if self._stay_connected == False:
+                self._device.disconnect()
             # Home assistant needs to see updated temperature value to confirm change
             self.poll(mqtt)
         except btle.BTLEDisconnectError as e:
             logger.error(e)
+            if self._device.is_connected():
+                self._device.disconnect()
+        except btle.BTLEInternalError as e:
+            logger.error(e)
+            if self._device.is_connected():
+                self._device.disconnect()
 
 
 class DeviceManager():
@@ -86,6 +95,7 @@ class DeviceManager():
         self._mqtt.hass_birth_callback = self._hass_birth_callback
 
     def _poll_devices(self):
+        self.ble_on()
         rerun = []
         for device in self._devices.values():
             if not device.poll(self._mqtt):
@@ -96,6 +106,7 @@ class DeviceManager():
             time.sleep(5)
             for device in rerun:
                 device.poll(self._mqtt)
+        self.ble_off()
 
     def poll_forever(self) -> NoReturn:
         if self._config.poll_schedule == "hour_minute":
@@ -120,7 +131,9 @@ class DeviceManager():
                 time.sleep(2)
 
     def _set_temerature_task(self, device: DeviceBase, temperature: float):
+        self.ble_on()
         device.set_temperature(self._mqtt, temperature)
+        self.ble_off()
         # this will cause the task to be executed only once
         return schedule.CancelJob
 
@@ -140,3 +153,13 @@ class DeviceManager():
 
     def _hass_birth_callback(self, mqtt: Mqtt):
         schedule.run_all(delay_seconds=1)
+
+    def ble_off(self):
+        if self._config.idle_block_ble:
+            logger.info("Disable Bluetooth")
+            os.system("sudo rfkill block bluetooth")
+
+    def ble_on(self):
+        if self._config.idle_block_ble:
+            logger.info("Enable Bluetooth")
+            os.system("sudo rfkill unblock bluetooth")

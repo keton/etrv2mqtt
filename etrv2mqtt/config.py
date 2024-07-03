@@ -75,6 +75,7 @@ class Config:
         )
         self.retry_limit: int = _config_json['options']['retry_limit']
         self.retry_rerun: bool = _config_json['options']['retry_rerun']
+        self.idle_block_ble: bool = _config_json['options']['idle_block_ble']
         self.poll_schedule: str = _config_json['options']['poll_schedule']
         self.poll_interval: int = _config_json['options']['poll_interval']
         self.poll_hour_minute: int = _config_json['options']['poll_hour_minute']
