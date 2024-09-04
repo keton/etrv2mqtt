@@ -54,6 +54,11 @@
                     "default": true,
                     "description": "Set retain bit on autodiscovery related messages"
                 },
+                "device_data_retain": {
+                    "type":"boolean",
+                    "default": false,
+                    "description": "Set retain bit on device data messages"
+                },
                 "hass_birth_topic": {
                     "type": "string",
                     "default": "hass/status",

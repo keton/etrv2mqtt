@@ -23,6 +23,7 @@ class _MQTTConfig:
     autodiscovery: bool
     autodiscovery_topic: str
     autodiscovery_retain: bool
+    device_data_retain: bool
     hass_birth_topic: str
     hass_birth_payload: str
 
@@ -70,6 +71,7 @@ class Config:
             _config_json['mqtt']['autodiscovery'],
             _config_json['mqtt']['autodiscovery_topic'],
             _config_json['mqtt']['autodiscovery_retain'],
+            _config_json['mqtt']['device_data_retain'],
             _config_json['mqtt']['hass_birth_topic'],
             _config_json['mqtt']['hass_birth_payload'],
         )
