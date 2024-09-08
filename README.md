@@ -1,6 +1,6 @@
 # note
 
-Base project that we're using ot talk to thermostats stopped updating. Therfore I have no way to keep etrv2mqtt working on modern deployments. Either stick to period correct Raspbian or use another tool.
+Base project that we're using to talk to thermostats stopped updating. Therfore I have no way to keep etrv2mqtt working on modern deployments. Either stick to period correct Raspbian or use another tool.
 
 # etrv2mqtt
 MQTT bridge for Danfoss eTRV thermostats. Supports MQTT autodiscovery in Home Assistant.
