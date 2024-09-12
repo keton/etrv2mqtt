@@ -25,7 +25,10 @@ class Autodiscovery():
         "min_temp":"10",
         "max_temp":"40",
         "temp_step":"0.5",
-        "modes":["heat"],
+        "suggested_display_precision": "1",
+        "modes":["auto"],
+        "mode_state_topic":"etrv2mqtt/state",
+        "mode_state_template":"{{ 'auto' }}",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -39,12 +42,15 @@ class Autodiscovery():
 
     _battery_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "device_class": "battery",
         "name": "kitchen battery",
         "unique_id":"0000_battery",
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.battery }}",
         "unit_of_measurement": "%",
+        "suggested_display_precision": "0",
+        "state_class": "measurement",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -58,6 +64,7 @@ class Autodiscovery():
 
     _reported_name_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "name": "kitchen reported name",
         "unique_id":"0000_rep_name",
         "state_topic": "etrv/kitchen/state",
@@ -81,6 +88,8 @@ class Autodiscovery():
         "state_topic": "etrv/kitchen/state",
         "value_template": "{{ value_json.room_temp }}",
         "unit_of_measurement": "°C",
+        "suggested_display_precision": "1",
+        "state_class": "measurement",
         "device": {
             "identifiers":"0000",
             "manufacturer": "Danfoss",
@@ -94,6 +103,7 @@ class Autodiscovery():
 
     _last_update_template = json.loads("""
     {
+        "entity_category": "diagnostic",
         "device_class": "timestamp",
         "name": "Kitchen Last Update",
         "unique_id":"0000_last_update",
@@ -139,6 +149,7 @@ class Autodiscovery():
         autodiscovery_msg = self._autodiscovery_payload(
             self._termostat_template, dev_mac, dev_name, "Thermostat")
         autodiscovery_msg['~'] = self._config.mqtt.base_topic+'/'+dev_name
+        autodiscovery_msg['mode_state_topic'] = self._config.mqtt.base_topic + "/state"
 
         return AutodiscoveryResult(autodiscovery_topic, payload=json.dumps(autodiscovery_msg))
 
