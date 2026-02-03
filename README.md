@@ -12,7 +12,7 @@ Device links are supported so Home Assistant sees all sensors as a single logica
   * **[github.com/Cymaphore/etrv2mqtt](https://github.com/Cymaphore/etrv2mqtt)**: Actively maintained fork, various enhancements; Primary target platform: RasperryPi Zero 2 W (running RaspberryPi OS Bullseye)
   * **[github.com/cg-ite/etrv2mqtt](https://github.com/cg-ite/etrv2mqtt)**: Experimental fork; Primary target platform RaspberryPi 3 / dietpi with bluepy3, not yet stable
 
-After keton discontinued development of etrv2mqtt, I (Cymaphore) forked the project and included various improvements over time. However, I didn't update the underlying bluetooth functionality for the rpi target platform yet, so my fork still relies on Debian Bullseye as a target environment for RaspberryPi. There is a branch of this repo from cg-ite that intends to do it but it is still unstable and under development. Once that fork appears stable, I will merge it.
+After keton discontinued development of etrv2mqtt, I (Cymaphore) forked the project and included various improvements over time. However, I didn't update the underlying bluetooth functionality for the rpi target platform yet, so my fork still relies on Debian Bullseye as a target environment for RaspberryPi. There is a fork of this repo from cg-ite that intends to perform that update, but it is still experimental/unstable and under development. Once that fork appears stable, I intend to merge it.
 
 ## Installation
 Install required packages (for Raspberry pi 3 and later)
