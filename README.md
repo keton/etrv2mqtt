@@ -6,6 +6,14 @@ MQTT bridge for Danfoss eTRV thermostats. Supports MQTT autodiscovery in Home As
 Device links are supported so Home Assistant sees all sensors as a single logical entity
 ![device properties example](docs/device_properties.png)
 
+## Repositories / Forks
+
+  * **[github.com/keton/etrv2mqtt](https://github.com/keton/etrv2mqtt)**: Original project from keton, archived and no longer maintained
+  * **[github.com/Cymaphore/etrv2mqtt](https://github.com/Cymaphore/etrv2mqtt)**: Actively maintained fork, various enhancements; Primary target platform: RasperryPi Zero 2 W (running RaspberryPi OS Bullseye)
+  * **[github.com/cg-ite/etrv2mqtt](https://github.com/cg-ite/etrv2mqtt)**: Experimental fork; Primary target platform RaspberryPi 3 / dietpi with bluepy3, not yet stable
+
+After keton discontinued development of etrv2mqtt, I (Cymaphore) forked the project and included various improvements over time. However, I didn't update the underlying bluetooth functionality for the rpi target platform yet, so my fork still relies on Debian Bullseye as a target environment for RaspberryPi. There is a branch of this repo from cg-ite that intends to do it but it is still unstable and under development. Once that fork appears stable, I will merge it.
+
 ## Installation
 Install required packages (for Raspberry pi 3 and later)
 ```sh
