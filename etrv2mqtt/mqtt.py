@@ -38,7 +38,7 @@ class Mqtt(object):
     def publish_device_data(self, name: str, data: str):
         if self._client.is_connected():
             self._client.publish(
-                self._config.mqtt.base_topic+'/'+name+'/state', payload=data)
+                self._config.mqtt.base_topic+'/'+name+'/state', payload=data, retain=self._config.mqtt.device_data_retain)
 
     def _publish_autodiscovery_result(self, result: AutodiscoveryResult, retain: bool = False):
         self._client.publish(

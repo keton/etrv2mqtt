@@ -70,23 +70,45 @@
 	 - <i id="#config.schema.json/properties/options">path: #config.schema.json/properties/options</i>
 	 - Default: `[object Object]`
 	 - **_Properties_**
+		 - <b id="#config.schema.json/properties/options/properties/poll_interval">poll_schedule</b>
+			 - _Polling schedule to use (regular interval, every hour at specified minute)_
+			 - Type: `enum`
+			 - <i id="#config.schema.json/properties/options/properties/poll_schedule">path: #config.schema.json/properties/options/properties/poll_schedule</i>
+			 - Default: `interval`
+			 - Possible values:  `interval`, `hour_minute`
 		 - <b id="#config.schema.json/properties/options/properties/poll_interval">poll_interval</b>
 			 - _Interval between thermostat data readouts in seconds_
 			 - Type: `integer`
 			 - <i id="#config.schema.json/properties/options/properties/poll_interval">path: #config.schema.json/properties/options/properties/poll_interval</i>
 			 - Default: `3600`
 			 - Range:  &ge; 1
+		 - <b id="#config.schema.json/properties/options/properties/poll_interval">poll_hour_minute</b>
+			 - _The minute of the hour polling starts (only used when poll_schedule is hour_minute_
+			 - Type: `integer`
+			 - <i id="#config.schema.json/properties/options/properties/poll_hour_minute">path: #config.schema.json/properties/options/properties/poll_hour_minute</i>
+			 - Default: `0`
+			 - Range:  0 - 59
 		 - <b id="#config.schema.json/properties/options/properties/retry_limit">retry_limit</b>
 			 - _Limit of BLE connect attempts_
 			 - Type: `integer`
 			 - <i id="#config.schema.json/properties/options/properties/retry_limit">path: #config.schema.json/properties/options/properties/retry_limit</i>
 			 - Default: `5`
 			 - Range:  &ge; 0
+		 - <b id="#config.schema.json/properties/options/properties/retry_limit">retry_rerun</b>
+			 - _Retry failed thermostats once again after the end of the queue_
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/options/properties/retry_rerun">path: #config.schema.json/properties/options/properties/retry_rerun</i>
+			 - Default: `true`
 		 - <b id="#config.schema.json/properties/options/properties/stay_connected">stay_connected</b>
 			 - _Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery._
 			 - Type: `boolean`
 			 - <i id="#config.schema.json/properties/options/properties/stay_connected">path: #config.schema.json/properties/options/properties/stay_connected</i>
 			 - Default: _false_
+		 - <b id="#config.schema.json/properties/options/properties/retry_limit">idle_block_ble</b>
+			 - _Disable Bluetooth when idle (requires sudo permissions for rfkill) - EXPERIMENTAL, avoid battery draining_
+			 - Type: `boolean`
+			 - <i id="#config.schema.json/properties/options/properties/idle_block_ble">path: #config.schema.json/properties/options/properties/idle_block_ble</i>
+			 - Default: `false`
 		 - <b id="#config.schema.json/properties/options/properties/report_room_temperature">report_room_temperature</b>
 			 - _Set to false to disable reporting current room temperature as a separate Home Assistant sensor in MQTT auto discovery_
 			 - Type: `boolean`

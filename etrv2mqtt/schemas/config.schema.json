@@ -54,6 +54,11 @@
                     "default": true,
                     "description": "Set retain bit on autodiscovery related messages"
                 },
+                "device_data_retain": {
+                    "type":"boolean",
+                    "default": false,
+                    "description": "Set retain bit on device data messages"
+                },
                 "hass_birth_topic": {
                     "type": "string",
                     "default": "hass/status",
@@ -71,11 +76,24 @@
             "default": {},
             "description": "Options common for all thermostats",
             "properties": {
+                "poll_schedule": {
+                    "type": "string",
+                    "description": "Polling schedule to use (regular interval, every hour at specified minute)",
+                    "enum": [ "interval", "hour_minute" ],
+                    "default": "interval"
+                },
                 "poll_interval": {
                     "type":"integer",
-                    "description": "Interval between thermostat data readouts in seconds",
+                    "description": "Interval between thermostat data readouts in seconds (only used when poll_schedule is interval)",
                     "minimum": 1,
                     "default": 3600
+                },
+                "poll_hour_minute": {
+                    "type": "integer",
+                    "description": "The minute of the hour polling starts (only used when poll_schedule is hour_minute",
+                    "minimum": 0,
+                    "maximum": 59,
+                    "default": 0
                 },
                 "retry_limit": {
                     "type":"integer",
@@ -83,9 +101,19 @@
                     "minimum": 0,
                     "default": 5
                 },
+                "retry_rerun": {
+                    "type": "boolean",
+                    "description": "Retry failed thermostats once again after the end of the queue",
+                    "default": true
+                },
                 "stay_connected": {
                     "type": "boolean",
                     "description": "Set to true in order to leave BLE connection running after polling thermostat data or setting temperature. May drain battery.",
+                    "default": false
+                },
+                "idle_block_ble": {
+                    "type": "boolean",
+                    "description": "Disable Bluetooth when idle (requires sudo permissions for rfkill) - EXPERIMENTAL, avoid battery draining",
                     "default": false
                 },
                 "report_room_temperature": {

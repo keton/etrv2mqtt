@@ -23,6 +23,7 @@ class _MQTTConfig:
     autodiscovery: bool
     autodiscovery_topic: str
     autodiscovery_retain: bool
+    device_data_retain: bool
     hass_birth_topic: str
     hass_birth_payload: str
 
@@ -70,11 +71,16 @@ class Config:
             _config_json['mqtt']['autodiscovery'],
             _config_json['mqtt']['autodiscovery_topic'],
             _config_json['mqtt']['autodiscovery_retain'],
+            _config_json['mqtt']['device_data_retain'],
             _config_json['mqtt']['hass_birth_topic'],
             _config_json['mqtt']['hass_birth_payload'],
         )
         self.retry_limit: int = _config_json['options']['retry_limit']
+        self.retry_rerun: bool = _config_json['options']['retry_rerun']
+        self.idle_block_ble: bool = _config_json['options']['idle_block_ble']
+        self.poll_schedule: str = _config_json['options']['poll_schedule']
         self.poll_interval: int = _config_json['options']['poll_interval']
+        self.poll_hour_minute: int = _config_json['options']['poll_hour_minute']
         self.stay_connected: bool = _config_json['options']['stay_connected']
         self.report_room_temperature: bool = _config_json['options']['report_room_temperature']
         self.setpoint_debounce_time: int = _config_json['options']['setpoint_debounce_time']
